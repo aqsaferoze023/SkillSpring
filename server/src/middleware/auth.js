@@ -1,0 +1,3 @@
+import jwt from'jsonwebtoken';import User from'../models/User.js';import{env}from'../config/env.js';
+export async function protect(req,res,next){try{const token=req.headers.authorization?.startsWith('Bearer ')?req.headers.authorization.slice(7):null;if(!token)return res.status(401).json({message:'Authentication required'});const decoded=jwt.verify(token,env.jwtSecret);const user=await User.findById(decoded.sub);if(!user||user.status==='suspended')return res.status(401).json({message:'Account unavailable'});req.user=user;next()}catch(e){res.status(401).json({message:'Invalid or expired token'})}}
+export const allow=(...roles)=>(req,res,next)=>roles.includes(req.user.role)?next():res.status(403).json({message:'You do not have permission for this action'});
