@@ -34,6 +34,8 @@ jobs:
 
       - name: Build client
         run: npm run build
+        env:
+          VITE_API_URL: https://skillspring-api-production.up.railway.app/api
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
