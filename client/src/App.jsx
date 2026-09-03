@@ -1,56 +1,4066 @@
-import React,{useEffect,useState}from'react';
-import{Routes,Route,Link,Navigate,useLocation,useNavigate,useParams}from'react-router-dom';
-import{ArrowRight,BookOpen,BrainCircuit,Check,ChevronDown,ChevronLeft,ChevronRight,Clock,GraduationCap,LayoutDashboard,Leaf,Lock,Menu,Play,Search,ShieldCheck,Sparkles,Star,Target,TrendingUp,Trophy,Users,X,Bell,BarChart3,CalendarDays,CircleCheck,FileText,LogOut,Plus,Settings,Video,ClipboardCheck,Award}from'lucide-react';
-import{api}from'./lib/api';
-import AdminDashboard from'./components/AdminDashboard';
+import React, { useEffect, useState } from 'react';
+import {
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 
-const courses=[
-{id:'product-design',title:'Product Design: From Research to Prototype',category:'Design',instructor:'Maya Chen',rating:4.9,students:'12.4k',lessons:28,hours:8.5,level:'Beginner',progress:68,color:'from-emerald-100 to-teal-50',icon:'✦',description:'Build thoughtful products through user research, rapid ideation, and interactive prototypes.'},
-{id:'data-python',title:'Data Analysis with Python',category:'Data',instructor:'Omar Khalid',rating:4.8,students:'9.8k',lessons:34,hours:11,level:'Intermediate',progress:34,color:'from-blue-100 to-cyan-50',icon:'⌁',description:'Turn messy datasets into clear insights with pandas, visualization, and practical projects.'},
-{id:'growth-marketing',title:'Modern Growth Marketing',category:'Marketing',instructor:'Sarah Williams',rating:4.7,students:'7.1k',lessons:22,hours:6.5,level:'All levels',progress:0,color:'from-amber-100 to-orange-50',icon:'↗',description:'Design sustainable growth loops, measure what matters, and run high-signal experiments.'},
-{id:'web-development',title:'Full-Stack Web Development',category:'Development',instructor:'Daniel Brooks',rating:4.9,students:'18.2k',lessons:46,hours:19,level:'Beginner',progress:12,color:'from-violet-100 to-purple-50',icon:'</>',description:'Build and deploy modern web applications with JavaScript, React, APIs, and databases.'},
-{id:'leadership',title:'Leadership That Builds Trust',category:'Business',instructor:'Nadia Rahman',rating:4.8,students:'5.6k',lessons:18,hours:4.5,level:'All levels',progress:0,color:'from-rose-100 to-pink-50',icon:'◎',description:'Lead with clarity, coach effectively, and create a culture where teams do their best work.'},
-{id:'ai-fundamentals',title:'Practical AI Fundamentals',category:'AI',instructor:'Hassan Ali',rating:4.9,students:'15.3k',lessons:31,hours:9,level:'Beginner',progress:0,color:'from-spring-100 to-lime-50',icon:'✺',description:'Understand modern AI systems and use them responsibly to solve real-world problems.'}
+import {
+  ArrowRight,
+  BookOpen,
+  BrainCircuit,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  GraduationCap,
+  LayoutDashboard,
+  Leaf,
+  Lock,
+  Menu,
+  Play,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Trophy,
+  Users,
+  X,
+  Bell,
+  BarChart3,
+  CalendarDays,
+  CircleCheck,
+  FileText,
+  LogOut,
+  Plus,
+  Settings,
+  Video,
+  ClipboardCheck,
+  Award
+} from 'lucide-react';
+
+import { api } from './lib/api';
+import AdminDashboard from './components/AdminDashboard';
+
+const courses = [
+  {
+    id: 'product-design',
+    title: 'Product Design: From Research to Prototype',
+    category: 'Design',
+    instructor: 'Maya Chen',
+    rating: 4.9,
+    students: '12.4k',
+    lessons: 28,
+    hours: 8.5,
+    level: 'Beginner',
+    progress: 68,
+    color: 'from-emerald-100 to-teal-50',
+    icon: '✦',
+    description:
+      'Build thoughtful products through user research, rapid ideation, and interactive prototypes.'
+  },
+  {
+    id: 'data-python',
+    title: 'Data Analysis with Python',
+    category: 'Data',
+    instructor: 'Omar Khalid',
+    rating: 4.8,
+    students: '9.8k',
+    lessons: 34,
+    hours: 11,
+    level: 'Intermediate',
+    progress: 34,
+    color: 'from-blue-100 to-cyan-50',
+    icon: '⌁',
+    description:
+      'Turn messy datasets into clear insights with pandas, visualization, and practical projects.'
+  },
+  {
+    id: 'growth-marketing',
+    title: 'Modern Growth Marketing',
+    category: 'Marketing',
+    instructor: 'Sarah Williams',
+    rating: 4.7,
+    students: '7.1k',
+    lessons: 22,
+    hours: 6.5,
+    level: 'All levels',
+    progress: 0,
+    color: 'from-amber-100 to-orange-50',
+    icon: '↗',
+    description:
+      'Design sustainable growth loops, measure what matters, and run high-signal experiments.'
+  },
+  {
+    id: 'web-development',
+    title: 'Full-Stack Web Development',
+    category: 'Development',
+    instructor: 'Daniel Brooks',
+    rating: 4.9,
+    students: '18.2k',
+    lessons: 46,
+    hours: 19,
+    level: 'Beginner',
+    progress: 12,
+    color: 'from-violet-100 to-purple-50',
+    icon: '</>',
+    description:
+      'Build and deploy modern web applications with JavaScript, React, APIs, and databases.'
+  },
+  {
+    id: 'leadership',
+    title: 'Leadership That Builds Trust',
+    category: 'Business',
+    instructor: 'Nadia Rahman',
+    rating: 4.8,
+    students: '5.6k',
+    lessons: 18,
+    hours: 4.5,
+    level: 'All levels',
+    progress: 0,
+    color: 'from-rose-100 to-pink-50',
+    icon: '◎',
+    description:
+      'Lead with clarity, coach effectively, and create a culture where teams do their best work.'
+  },
+  {
+    id: 'ai-fundamentals',
+    title: 'Practical AI Fundamentals',
+    category: 'AI',
+    instructor: 'Hassan Ali',
+    rating: 4.9,
+    students: '15.3k',
+    lessons: 31,
+    hours: 9,
+    level: 'Beginner',
+    progress: 0,
+    color: 'from-spring-100 to-lime-50',
+    icon: '✺',
+    description:
+      'Understand modern AI systems and use them responsibly to solve real-world problems.'
+  }
 ];
-const stats=[['50K+','active learners'],['1,200+','expert lessons'],['94%','completion satisfaction'],['80+','countries learning']];
 
-function Brand(){return <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-xl"><span className="grid h-9 w-9 place-items-center rounded-xl bg-spring-600 text-white shadow-lg shadow-spring-600/20"><Leaf size={20}/></span>SkillSpring</Link>}
-function Navbar({user,onAuth,onLogout}){
-  const[open,setOpen]=useState(false);const[accountOpen,setAccountOpen]=useState(false);
-  const dashboardPath=user?.role==='admin'?'/admin':'/dashboard';
-  return <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl"><div className="container-page flex h-18 items-center justify-between py-3"><Brand/><nav className="hidden items-center gap-7 text-sm font-semibold text-slate-600 md:flex"><Link className="hover:text-spring-700" to="/courses">Explore courses</Link><a className="hover:text-spring-700" href="/#outcomes">For teams</a><a className="hover:text-spring-700" href="/#why">Why SkillSpring</a></nav><div className="hidden items-center gap-3 md:flex">{user?<><Link className="btn-secondary !py-2.5" to={dashboardPath}><LayoutDashboard size={17}/>Dashboard</Link><div className="relative"><button onClick={()=>setAccountOpen(!accountOpen)} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 hover:border-spring-300" aria-expanded={accountOpen}><span className="grid h-8 w-8 place-items-center rounded-full bg-spring-100 text-xs font-black text-spring-800">{user.name?.split(' ').map(x=>x[0]).join('').slice(0,2)||'U'}</span><span className="max-w-28 truncate text-left text-sm font-bold">{user.name}</span><ChevronDown size={15}/></button>{accountOpen&&<div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border bg-white p-2 shadow-soft"><div className="border-b px-3 py-3"><p className="truncate text-sm font-bold">{user.name}</p><p className="mt-1 truncate text-xs text-slate-400">{user.email}</p><span className="mt-2 inline-block rounded-full bg-spring-50 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-spring-700">{user.role}</span></div><Link onClick={()=>setAccountOpen(false)} to="/settings" className="mt-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50"><Settings size={17}/>Account settings</Link><button onClick={onLogout} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-red-600 hover:bg-red-50"><LogOut size={17}/>Log out</button></div>}</div></>:<><button onClick={()=>onAuth('login')} className="px-3 py-2 text-sm font-bold">Log in</button><button onClick={()=>onAuth('register')} className="btn-primary !py-2.5">Start learning</button></>}</div><button className="md:hidden" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></div>{open&&<div className="border-t bg-white p-5 md:hidden"><div className="flex flex-col gap-4 font-semibold"><Link to="/courses">Explore courses</Link><a href="/#why">Why SkillSpring</a>{user?<><Link to={dashboardPath} className="btn-secondary"><LayoutDashboard size={17}/>Dashboard</Link><Link to="/settings" className="btn-secondary"><Settings size={17}/>Account settings</Link><button onClick={onLogout} className="flex items-center justify-center gap-2 rounded-xl bg-red-50 px-5 py-3 text-sm font-bold text-red-700"><LogOut size={17}/>Log out</button></>:<><button onClick={()=>onAuth('login')} className="btn-secondary">Log in</button><button onClick={()=>onAuth('register')} className="btn-primary">Start learning</button></>}</div></div>}</header>
+const stats = [
+  ['50K+', 'active learners'],
+  ['1,200+', 'expert lessons'],
+  ['94%', 'completion satisfaction'],
+  ['80+', 'countries learning']
+];
+
+function Brand() {
+  return (
+    <Link
+      to="/"
+      className="flex items-center gap-2.5 font-extrabold tracking-tight text-xl"
+    >
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-spring-600 text-white shadow-lg shadow-spring-600/20">
+        <Leaf size={20} />
+      </span>
+      SkillSpring
+    </Link>
+  );
 }
-function Home(){return <><section className="mesh overflow-hidden border-b border-slate-100"><div className="container-page grid min-h-[680px] items-center gap-14 py-16 lg:grid-cols-[1.03fr_.97fr]"><div><div className="mb-6 inline-flex items-center gap-2 rounded-full border border-spring-200 bg-white/80 px-3.5 py-2 text-xs font-bold text-spring-800"><Sparkles size={15}/>Learning that adapts to you</div><h1 className="max-w-2xl text-5xl font-black leading-[1.03] tracking-[-.045em] sm:text-6xl lg:text-7xl">Grow skills.<br/><span className="text-spring-600">Shape your future.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-slate-600">Learn from experts, practice with purpose, and stay on track with an AI-powered learning experience built around your goals.</p><div className="mt-9 flex flex-wrap gap-3"><Link to="/courses" className="btn-primary !px-6 !py-3.5">Explore courses <ArrowRight size={18}/></Link><Link to="/course/product-design" className="btn-secondary !px-6 !py-3.5"><Play size={17} fill="currentColor"/>See how it works</Link></div><div className="mt-8 flex items-center gap-4 text-sm text-slate-500"><div className="flex -space-x-2">{['MC','OK','SW','NA'].map((x,i)=><div key={x} className={`grid h-9 w-9 place-items-center rounded-full border-2 border-white text-[10px] font-extrabold ${['bg-amber-200','bg-blue-200','bg-rose-200','bg-violet-200'][i]}`}>{x}</div>)}</div><div><span className="font-extrabold text-ink">4.9</span> <span className="text-amber-500">★★★★★</span><br/><span className="text-xs">Loved by 50,000+ learners</span></div></div></div><HeroVisual/></div></section><section className="border-b bg-white"><div className="container-page grid grid-cols-2 gap-6 py-8 sm:grid-cols-4">{stats.map(([a,b])=><div key={b} className="text-center"><div className="text-2xl font-black tracking-tight">{a}</div><div className="mt-1 text-xs font-medium text-slate-500">{b}</div></div>)}</div></section><Popular/><Why/><CTA/></>}
-function HeroVisual(){return <div className="relative mx-auto w-full max-w-[560px]"><div className="absolute -inset-8 rounded-full bg-spring-200/30 blur-3xl"/><div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft"><div className="rounded-2xl bg-ink p-6 text-white"><div className="flex items-center justify-between"><span className="text-sm font-bold">Your learning space</span><span className="rounded-full bg-white/10 px-3 py-1 text-[11px]">Week 7</span></div><div className="mt-8 grid grid-cols-2 gap-3"><div className="rounded-xl bg-white/10 p-4"><p className="text-xs text-white/60">Learning streak</p><p className="mt-2 text-3xl font-black">12 <span className="text-sm font-medium">days</span></p><div className="mt-3 flex gap-1">{[1,1,1,1,1,1,0].map((x,i)=><span key={i} className={`h-6 w-2 rounded-full ${x?'bg-spring-400':'bg-white/15'}`}/>)}</div></div><div className="rounded-xl bg-spring-500 p-4"><p className="text-xs text-white/80">Weekly goal</p><p className="mt-2 text-3xl font-black">78%</p><div className="mt-4 h-2 rounded-full bg-black/15"><div className="h-full w-[78%] rounded-full bg-white"/></div></div></div></div><div className="mt-4 rounded-2xl border border-slate-100 p-5"><div className="flex items-center gap-4"><div className="grid h-14 w-14 place-items-center rounded-xl bg-amber-100 text-2xl">✦</div><div className="min-w-0 flex-1"><div className="flex justify-between gap-3"><p className="truncate font-extrabold">Product Design Essentials</p><span className="text-xs font-bold text-spring-700">68%</span></div><p className="mt-1 text-xs text-slate-500">Lesson 16 · Prototype testing</p><div className="mt-3 h-1.5 rounded-full bg-slate-100"><div className="h-full w-[68%] rounded-full bg-spring-500"/></div></div><button className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white"><Play size={15} fill="currentColor"/></button></div></div></div><div className="absolute -right-5 top-12 hidden rounded-xl bg-white p-3 shadow-soft sm:block"><div className="flex items-center gap-2 text-xs font-bold"><CircleCheck className="text-spring-600" size={20}/>Lesson complete!</div></div><div className="absolute -bottom-6 -left-8 hidden max-w-48 rounded-xl bg-white p-4 shadow-soft sm:block"><div className="flex items-center gap-2 text-xs font-bold"><BrainCircuit className="text-violet-600" size={20}/>AI study insight</div><p className="mt-2 text-[11px] leading-4 text-slate-500">You retain more with 20-minute focused sessions.</p></div></div>}
-function Popular(){return <section className="py-24"><div className="container-page"><div className="flex items-end justify-between"><div><p className="eyebrow">Discover your next skill</p><h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Courses learners love</h2></div><Link to="/courses" className="hidden items-center gap-1 text-sm font-bold text-spring-700 sm:flex">Browse all <ArrowRight size={16}/></Link></div><div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">{courses.slice(0,3).map(c=><CourseCard key={c.id} c={c}/>)}</div></div></section>}
-function CourseCard({c}){return <Link to={`/course/${c.id}`} className="card group overflow-hidden hover:-translate-y-1 hover:shadow-soft"><div className={`relative grid h-44 place-items-center bg-gradient-to-br ${c.color}`}><span className="text-5xl font-black text-ink/70">{c.icon}</span><span className="absolute left-4 top-4 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider">{c.category}</span><button className="absolute bottom-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-lg group-hover:bg-spring-600 group-hover:text-white"><Play size={16} fill="currentColor"/></button></div><div className="p-5"><div className="flex items-center gap-3 text-xs text-slate-500"><span className="flex items-center gap-1"><Star size={13} className="fill-amber-400 text-amber-400"/>{c.rating}</span><span>·</span><span>{c.level}</span><span>·</span><span>{c.hours}h</span></div><h3 className="mt-3 min-h-12 text-lg font-extrabold leading-6 group-hover:text-spring-700">{c.title}</h3><p className="mt-3 text-sm text-slate-500">By {c.instructor}</p></div></Link>}
-function Why(){const items=[[Target,'Learning with direction','Personalized paths and weekly goals keep every session focused.'],[BrainCircuit,'An AI tutor in your corner','Get clear explanations and helpful nudges exactly when you need them.'],[TrendingUp,'Progress you can see','Turn learning activity into insights, momentum, and measurable growth.'],[Award,'Proof of your progress','Earn verified certificates that showcase the skills you have built.']];return <section id="why" className="bg-ink py-24 text-white"><div className="container-page grid gap-14 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow !text-spring-300">Built for real progress</p><h2 className="mt-4 text-4xl font-black tracking-tight">More than watching videos.</h2><p className="mt-5 leading-7 text-white/60">SkillSpring brings practice, feedback, community, and insight together—so learning turns into capability.</p></div><div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2">{items.map(([I,t,d])=><div key={t} className="bg-ink p-7"><I className="text-spring-400"/><h3 className="mt-5 font-extrabold">{t}</h3><p className="mt-2 text-sm leading-6 text-white/55">{d}</p></div>)}</div></div></section>}
-function CTA(){return <section className="py-20"><div className="container-page"><div className="mesh overflow-hidden rounded-[2rem] border border-spring-100 bg-spring-50 px-6 py-16 text-center sm:px-12"><GraduationCap className="mx-auto text-spring-600" size={40}/><h2 className="mx-auto mt-5 max-w-2xl text-4xl font-black tracking-tight">Your next chapter starts with one lesson.</h2><p className="mx-auto mt-4 max-w-xl text-slate-600">Join thousands of curious learners building skills for work and life.</p><Link className="btn-primary mt-8" to="/courses">Start learning for free <ArrowRight size={17}/></Link></div></div></section>}
-function Courses(){const[q,setQ]=useState('');const[cat,setCat]=useState('All');const list=courses.filter(c=>(cat==='All'||c.category===cat)&&c.title.toLowerCase().includes(q.toLowerCase()));return <main><section className="border-b bg-spring-50 py-16"><div className="container-page"><p className="eyebrow">Course library</p><h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Learn something that matters.</h1><p className="mt-4 max-w-2xl text-slate-600">Expert-led courses, practical projects, and support at every step.</p><div className="relative mt-8 max-w-2xl"><Search className="absolute left-4 top-3.5 text-slate-400" size={20}/><input value={q} onChange={e=>setQ(e.target.value)} className="input !py-3.5 !pl-12 shadow-sm" placeholder="Search courses, topics, or skills"/></div></div></section><section className="container-page py-12"><div className="mb-8 flex flex-wrap gap-2">{['All','Design','Data','Marketing','Development','Business','AI'].map(x=><button onClick={()=>setCat(x)} key={x} className={`rounded-full px-4 py-2 text-sm font-bold ${cat===x?'bg-ink text-white':'border bg-white text-slate-600 hover:border-spring-300'}`}>{x}</button>)}</div><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{list.map(c=><CourseCard c={c} key={c.id}/>)}</div></section></main>}
-function CourseDetail(){const{id}=useParams();const c=courses.find(x=>x.id===id)||courses[0];const nav=useNavigate();return <main><section className="bg-ink py-16 text-white"><div className="container-page grid items-center gap-10 lg:grid-cols-[1fr_380px]"><div><Link to="/courses" className="mb-8 inline-flex items-center gap-1 text-sm text-white/60 hover:text-white"><ChevronLeft size={16}/>All courses</Link><div className="eyebrow !text-spring-300">{c.category} · {c.level}</div><h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-5xl">{c.title}</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-white/65">{c.description}</p><div className="mt-7 flex flex-wrap gap-5 text-sm"><span className="flex items-center gap-1"><Star size={16} className="fill-amber-400 text-amber-400"/>{c.rating} rating</span><span className="flex items-center gap-1"><Users size={16}/>{c.students} learners</span><span className="flex items-center gap-1"><Clock size={16}/>{c.hours} hours</span></div><p className="mt-7 text-sm">Created by <strong className="text-spring-300">{c.instructor}</strong></p></div><div className="card overflow-hidden text-ink"><div className={`grid h-48 place-items-center bg-gradient-to-br ${c.color}`}><button className="grid h-16 w-16 place-items-center rounded-full bg-white shadow-xl"><Play fill="currentColor"/></button></div><div className="p-6"><div className="text-2xl font-black">Free to enroll</div><button onClick={()=>nav('/dashboard')} className="btn-primary mt-5 w-full">Enroll now <ArrowRight size={17}/></button><p className="mt-3 text-center text-xs text-slate-400">Full lifetime access · Certificate included</p></div></div></div></section><section className="container-page grid gap-12 py-16 lg:grid-cols-[1fr_340px]"><div><h2 className="text-2xl font-black">What you’ll learn</h2><div className="mt-6 grid gap-4 sm:grid-cols-2">{['Apply a practical end-to-end workflow','Build portfolio-ready projects','Use proven tools with confidence','Explain key ideas in plain language'].map(x=><div key={x} className="flex gap-3 rounded-xl border bg-white p-4 text-sm"><Check className="shrink-0 text-spring-600" size={18}/>{x}</div>)}</div><h2 className="mt-12 text-2xl font-black">Course curriculum</h2>{['Foundations and first principles','Tools, methods, and guided practice','Building your capstone project','Review, assessment, and next steps'].map((x,i)=><div key={x} className="mt-3 flex items-center justify-between rounded-xl border bg-white p-5"><div className="flex items-center gap-4"><span className="grid h-8 w-8 place-items-center rounded-lg bg-spring-50 text-xs font-black text-spring-700">0{i+1}</span><div><p className="font-bold">{x}</p><p className="mt-1 text-xs text-slate-500">{5+i} lessons · {55+i*12} min</p></div></div><ChevronDown size={18}/></div>)}</div><aside><div className="card p-6"><h3 className="font-extrabold">This course includes</h3><div className="mt-5 space-y-4 text-sm text-slate-600">{[[Video,`${c.hours} hours on-demand video`],[FileText,'Downloadable resources'],[ClipboardCheck,'Quizzes and practice tasks'],[BrainCircuit,'AI tutor support'],[Award,'Verified certificate']].map(([I,t])=><div key={t} className="flex items-center gap-3"><I size={17} className="text-spring-600"/>{t}</div>)}</div></div></aside></section></main>}
-function Dashboard({user}){const[tab,setTab]=useState('Overview');if(user?.role==='instructor')return <InstructorDashboard user={user}/>;if(user?.role==='admin')return <Navigate to="/admin" replace/>;const tabs=[['Overview',LayoutDashboard],['My learning',BookOpen],['Analytics',BarChart3],['Certificates',Award],['Notifications',Bell]];return <div className="min-h-[calc(100vh-72px)] bg-slate-50"><div className="container-page flex gap-7 py-8"><aside className="hidden w-56 shrink-0 lg:block"><div className="sticky top-24 space-y-1">{tabs.map(([t,I])=><button key={t} onClick={()=>setTab(t)} className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold ${tab===t?'bg-ink text-white':'text-slate-500 hover:bg-white'}`}><I size={18}/>{t}</button>)}<div className="my-3 border-t"/><Link to="/settings" className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-500 hover:bg-white"><Settings size={18}/>Settings</Link></div></aside><main className="min-w-0 flex-1">{tab==='Overview'?<Overview user={user}/>:tab==='My learning'?<MyLearning/>:tab==='Analytics'?<Analytics/>:tab==='Certificates'?<Certificates/>:<Notifications/>}</main></div></div>}
-function InstructorDashboard({user}){return <div className="min-h-[calc(100vh-72px)] bg-slate-50"><main className="container-page py-9"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="eyebrow">Instructor workspace</p><h1 className="mt-2 text-3xl font-black">Welcome back, {user?.name?.split(' ')[0]||'Instructor'}</h1><p className="mt-2 text-slate-500">Create great learning experiences and understand your students.</p></div><Link to="/instructor/courses/new" className="btn-primary"><Plus size={17}/>Create course</Link></div><div className="mt-8 grid gap-4 sm:grid-cols-4"><Metric icon={BookOpen} value="6" label="Published courses" note="2 drafts in progress"/><Metric icon={Users} value="3,842" label="Total learners" note="↑ 12% this month"/><Metric icon={Star} value="4.8" label="Average rating" note="Across 721 reviews"/><Metric icon={TrendingUp} value="71%" label="Completion rate" note="↑ 4 points"/></div><div className="mt-7 grid gap-6 lg:grid-cols-[1.35fr_.65fr]"><section className="card p-6"><div className="flex items-center justify-between"><h2 className="text-xl font-black">Your courses</h2><button className="text-sm font-bold text-spring-700">View all</button></div>{courses.slice(0,3).map((c,i)=><div key={c.id} className="mt-4 flex items-center gap-4 rounded-xl border p-4"><div className={`grid h-16 w-20 shrink-0 place-items-center rounded-lg bg-gradient-to-br font-black ${c.color}`}>{c.icon}</div><div className="min-w-0 flex-1"><p className="truncate font-extrabold">{c.title}</p><p className="mt-1 text-xs text-slate-500">{[1284,966,745][i]} learners · {c.rating} rating</p></div><span className={`rounded-full px-3 py-1 text-xs font-bold ${i===2?'bg-amber-50 text-amber-700':'bg-spring-50 text-spring-700'}`}>{i===2?'Draft':'Published'}</span><button className="btn-secondary !p-2"><Settings size={16}/></button></div>)}</section><section className="card p-6"><h2 className="text-xl font-black">Course builder</h2><p className="mt-2 text-sm leading-6 text-slate-500">Structure sections, add video or text lessons, create quizzes, and submit for review.</p>{[['Course details',Check],['Curriculum',Check],['Assessments',Plus],['Publish checklist',Lock]].map(([x,I],i)=><div key={x} className="mt-4 flex items-center gap-3"><span className={`grid h-8 w-8 place-items-center rounded-lg ${i<2?'bg-spring-50 text-spring-700':'bg-slate-100 text-slate-400'}`}><I size={15}/></span><span className="text-sm font-bold">{x}</span></div>)}<Link to="/instructor/courses/new" className="btn-primary mt-6 w-full">Open course builder</Link></section></div></main></div>}
-function InstructorManagement(){const[tab,setTab]=useState('Active');const[email,setEmail]=useState('');const[showInvite,setShowInvite]=useState(false);const[notice,setNotice]=useState('');const[active,setActive]=useState([{id:1,name:'Maya Chen',email:'maya@skillspring.com',courses:6,status:'Active'},{id:2,name:'Omar Khalid',email:'omar@skillspring.com',courses:4,status:'Active'},{id:3,name:'Nadia Rahman',email:'nadia@skillspring.com',courses:3,status:'Active'}]);const[pending,setPending]=useState([]);async function loadManagement(){try{const d=await api('/instructor-invitations');setActive(d.instructors.map(x=>({id:x._id,name:x.name,email:x.email,courses:x.courses||0,status:x.status})));setPending(d.invitations.filter(x=>x.status==='pending').map(x=>({id:x._id,email:x.email,expires:new Date(x.expiresAt).toLocaleDateString(),sent:new Date(x.lastSentAt).toLocaleString()})))}catch(e){setNotice(e.message)}}useEffect(()=>{if(!import.meta.env.DEV)loadManagement()},[]);const used=active.length+pending.length,available=Math.max(0,5-used);async function invite(e){e.preventDefault();const clean=email.trim().toLowerCase();if(!clean)return;if(used>=5){setNotice('All 5 instructor slots are currently reserved.');return}if(active.some(x=>x.email===clean)||pending.some(x=>x.email===clean)){setNotice('This person is already an instructor or has a pending invitation.');return}if(!import.meta.env.DEV){try{await api('/instructor-invitations',{method:'POST',body:JSON.stringify({email:clean})});await loadManagement()}catch(e){setNotice(e.message);return}}else setPending([...pending,{id:Date.now(),email:clean,expires:'September 4, 2026',sent:'Just now'}]);setEmail('');setShowInvite(false);setTab('Pending');setNotice(`Invitation sent to ${clean}`)}async function cancel(id){if(!import.meta.env.DEV){try{await api(`/instructor-invitations/${id}`,{method:'DELETE'});await loadManagement()}catch(e){setNotice(e.message);return}}else setPending(pending.filter(x=>x.id!==id));setNotice('Invitation cancelled and slot released.')}async function remove(id){if(!import.meta.env.DEV){try{await api(`/instructor-invitations/instructors/${id}/access`,{method:'DELETE'});await loadManagement()}catch(e){setNotice(e.message);return}}else setActive(active.filter(x=>x.id!==id));setNotice('Instructor access removed. The account is now a student.')}async function resend(id,email){if(!import.meta.env.DEV){try{await api(`/instructor-invitations/${id}/resend`,{method:'POST'});await loadManagement()}catch(e){setNotice(e.message);return}}setNotice(`A fresh 7-day invitation was resent to ${email}`)}return <section className="card mt-7 overflow-hidden"><div className="flex flex-wrap items-center justify-between gap-5 border-b p-6"><div className="flex items-center gap-4"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-spring-50 text-spring-700"><GraduationCap size={24}/></span><div><h2 className="text-xl font-black">Instructor Management</h2><p className="mt-1 text-sm text-slate-500">Invitation-only access · Maximum 5 instructors</p></div></div><button disabled={available===0} onClick={()=>setShowInvite(true)} className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"><Plus size={17}/>Invite instructor</button></div><div className="grid border-b sm:grid-cols-[1fr_1fr_2fr]"><div className="p-6 sm:border-r"><p className="text-3xl font-black"><span className="text-spring-600">{active.length}</span> / 5</p><p className="mt-1 text-sm font-bold text-slate-500">Active instructors</p></div><div className="p-6 sm:border-r"><p className="text-3xl font-black">{available}</p><p className="mt-1 text-sm font-bold text-slate-500">Slots available</p></div><div className="p-6"><div className="flex justify-between text-xs font-bold"><span>Instructor capacity</span><span>{used} of 5 reserved</span></div><div className="mt-3 flex gap-2">{[0,1,2,3,4].map(i=><span key={i} className={`h-3 flex-1 rounded-full ${i<active.length?'bg-spring-600':i<used?'bg-amber-400':'bg-slate-100'}`}/>)}</div><div className="mt-3 flex gap-4 text-[11px] text-slate-400"><span>● Active</span><span className="text-amber-600">● Pending</span><span className="text-slate-300">● Available</span></div></div></div>{notice&&<div className="mx-6 mt-5 flex items-center justify-between rounded-xl bg-spring-50 p-3 text-sm font-semibold text-spring-800"><span><CircleCheck size={16} className="mr-2 inline"/>{notice}</span><button onClick={()=>setNotice('')}><X size={15}/></button></div>}<div className="flex gap-2 px-6 pt-6">{['Active','Pending'].map(x=><button key={x} onClick={()=>setTab(x)} className={`rounded-full px-4 py-2 text-sm font-bold ${tab===x?'bg-ink text-white':'border bg-white text-slate-500'}`}>{x} {x==='Active'?`(${active.length})`:`(${pending.length})`}</button>)}</div><div className="p-6">{tab==='Active'&&<div className="overflow-x-auto"><table className="w-full min-w-[650px] text-left text-sm"><thead className="border-b text-xs uppercase tracking-wider text-slate-400"><tr><th className="pb-3">Instructor</th><th className="pb-3">Status</th><th className="pb-3">Courses</th><th className="pb-3 text-right">Management</th></tr></thead><tbody>{active.map(x=><tr key={x.id} className="border-b last:border-0"><td className="py-4"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-full bg-spring-100 font-black text-spring-800">{x.name.split(' ').map(n=>n[0]).join('')}</span><div><p className="font-bold">{x.name}</p><p className="mt-0.5 text-xs text-slate-400">{x.email}</p></div></div></td><td><span className="rounded-full bg-spring-50 px-3 py-1 text-xs font-bold text-spring-700">Active</span></td><td className="font-bold">{x.courses}</td><td className="text-right"><button onClick={()=>remove(x.id)} className="rounded-lg border px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600">Remove access</button></td></tr>)}</tbody></table></div>}{tab==='Pending'&&(pending.length?<div className="space-y-3">{pending.map(x=><div key={x.id} className="flex flex-wrap items-center gap-4 rounded-xl border p-4"><span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-700"><Bell size={18}/></span><div className="min-w-52 flex-1"><p className="font-bold">{x.email}</p><p className="mt-1 text-xs text-slate-400">Sent {x.sent} · Expires {x.expires}</p></div><span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">Pending</span><button onClick={()=>resend(x.id,x.email)} className="btn-secondary !px-3 !py-2">Resend</button><button onClick={()=>cancel(x.id)} className="px-3 py-2 text-xs font-bold text-red-600">Cancel</button></div>)}</div>:<div className="py-10 text-center"><Bell className="mx-auto text-slate-300"/><p className="mt-3 font-bold">No pending invitations</p><p className="mt-1 text-sm text-slate-400">Invitations waiting for acceptance will appear here.</p></div>)}</div>{showInvite&&<div className="fixed inset-0 z-50 grid place-items-center bg-ink/70 p-4 backdrop-blur-sm"><form onSubmit={invite} className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl"><div className="flex items-center justify-between"><span className="grid h-11 w-11 place-items-center rounded-xl bg-spring-50 text-spring-700"><GraduationCap/></span><button type="button" onClick={()=>setShowInvite(false)}><X/></button></div><h3 className="mt-6 text-2xl font-black">Invite an instructor</h3><p className="mt-2 text-sm leading-6 text-slate-500">They will receive a secure, single-use invitation that expires after 7 days. The accepting account must use the same email.</p><label className="mt-6 block"><span className="mb-2 block text-sm font-bold">Email address</span><input autoFocus required type="email" className="input" value={email} onChange={e=>setEmail(e.target.value)} placeholder="instructor@example.com"/></label><div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs text-slate-500"><ShieldCheck size={15} className="mr-2 inline text-spring-700"/>{available} of 5 instructor slots available</div><button className="btn-primary mt-5 w-full">Send 7-day invitation <ArrowRight size={17}/></button></form></div>}</section>}
-function LegacyAdminDashboard({user}){return <div className="min-h-[calc(100vh-72px)] bg-slate-50"><main className="container-page py-9"><div><p className="eyebrow">Platform administration</p><h1 className="mt-2 text-3xl font-black">SkillSpring overview</h1><p className="mt-2 text-slate-500">Review activity, approvals, and platform health.</p></div><div className="mt-8 grid gap-4 sm:grid-cols-4"><Metric icon={Users} value="50,284" label="Total users" note="1,208 joined this month"/><Metric icon={GraduationCap} value="428" label="Instructors" note="14 awaiting approval"/><Metric icon={BookOpen} value="1,206" label="Published courses" note="23 awaiting review"/><Metric icon={BarChart3} value="68.4%" label="Platform completion" note="↑ 2.7 points"/></div><InstructorManagement/><div className="mt-7 grid gap-6 lg:grid-cols-2"><section className="card p-6"><div className="flex justify-between"><h2 className="text-xl font-black">Pending approvals</h2><span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">37 items</span></div>{['Advanced UX Research','Machine Learning Projects','Strategic Brand Systems'].map((x,i)=><div key={x} className="mt-4 flex items-center gap-4 rounded-xl border p-4"><span className="grid h-10 w-10 place-items-center rounded-xl bg-spring-50 text-spring-700"><FileText size={18}/></span><div className="flex-1"><p className="font-bold">{x}</p><p className="mt-1 text-xs text-slate-500">Submitted {i+1} day{i?'s':''} ago</p></div><button className="text-sm font-bold text-spring-700">Review</button></div>)}</section><section className="card p-6"><h2 className="text-xl font-black">Platform signals</h2>{[['API & database','Operational','text-spring-700 bg-spring-50'],['Content reports','3 open','text-amber-700 bg-amber-50'],['Security events','No issues','text-spring-700 bg-spring-50'],['AI tutor usage','8,420 today','text-violet-700 bg-violet-50']].map(([x,v,c])=><div key={x} className="mt-4 flex items-center justify-between border-b pb-4 text-sm"><span className="font-semibold text-slate-600">{x}</span><span className={`rounded-full px-3 py-1 text-xs font-bold ${c}`}>{v}</span></div>)}</section></div></main></div>}
-function Overview({user}){return <><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm text-slate-500">Friday, August 28</p><h1 className="mt-1 text-3xl font-black tracking-tight">Good afternoon, {user?.name?.split(' ')[0]||'Ayesha'} 👋</h1><p className="mt-2 text-sm text-slate-500">Small steps add up. Keep your momentum going.</p></div><Link to="/courses" className="btn-primary"><Plus size={17}/>Find a course</Link></div><div className="mt-8 grid gap-4 sm:grid-cols-3"><Metric icon={Clock} value="4h 20m" label="Learning this week" note="↑ 18% from last week"/><Metric icon={Trophy} value="12 days" label="Current streak" note="Personal best: 19 days"/><Metric icon={Target} value="78%" label="Weekly goal" note="1h 05m remaining"/></div><div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_.65fr]"><div className="card p-6"><div className="flex items-center justify-between"><div><h2 className="text-xl font-black">Continue learning</h2><p className="mt-1 text-sm text-slate-500">Pick up right where you left off.</p></div><Link to="/courses" className="text-sm font-bold text-spring-700">View all</Link></div><div className="mt-6 space-y-4">{courses.slice(0,2).map(c=><div key={c.id} className="flex flex-col gap-4 rounded-xl border p-4 sm:flex-row sm:items-center"><div className={`grid h-20 w-full shrink-0 place-items-center rounded-xl bg-gradient-to-br text-2xl font-black sm:w-24 ${c.color}`}>{c.icon}</div><div className="min-w-0 flex-1"><p className="text-xs font-bold uppercase tracking-wider text-spring-700">{c.category}</p><h3 className="mt-1 truncate font-extrabold">{c.title}</h3><div className="mt-3 flex items-center gap-3"><div className="h-1.5 flex-1 rounded-full bg-slate-100"><div className="h-full rounded-full bg-spring-500" style={{width:`${c.progress}%`}}/></div><span className="text-xs font-bold">{c.progress}%</span></div></div><Link to={`/learn/${c.id}`} className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink text-white"><Play size={14} fill="currentColor"/></Link></div>)}</div></div><div className="card p-6"><div className="flex items-center justify-between"><h2 className="text-xl font-black">Weekly activity</h2><span className="text-xs text-slate-400">Aug 24–30</span></div><div className="mt-8 flex h-36 items-end justify-between gap-2">{[40,72,35,90,64,20,5].map((v,i)=><div key={i} className="flex flex-1 flex-col items-center gap-2"><div className="w-full max-w-7 rounded-t-md bg-spring-200" style={{height:`${v}%`}}><div className="h-2/3 w-full rounded-t-md bg-spring-500"/></div><span className="text-[10px] text-slate-400">{['M','T','W','T','F','S','S'][i]}</span></div>)}</div><div className="mt-5 rounded-xl bg-spring-50 p-4"><div className="flex gap-3"><Sparkles className="shrink-0 text-spring-600" size={18}/><p className="text-xs leading-5 text-slate-600"><strong className="text-ink">Smart insight:</strong> Your strongest learning window is 6–8 PM. Schedule your next session then.</p></div></div></div></div></>}
-function Metric({icon:I,value,label,note}){return <div className="card p-5"><div className="flex items-start justify-between"><div><p className="text-2xl font-black">{value}</p><p className="mt-1 text-sm font-semibold text-slate-500">{label}</p></div><span className="grid h-10 w-10 place-items-center rounded-xl bg-spring-50 text-spring-700"><I size={20}/></span></div><p className="mt-4 text-xs text-spring-700">{note}</p></div>}
-function MyLearning(){return <><h1 className="text-3xl font-black">My learning</h1><p className="mt-2 text-slate-500">Your active, saved, and completed courses.</p><div className="mt-7 flex gap-2">{['In progress','Saved','Completed'].map((x,i)=><button key={x} className={`rounded-full px-4 py-2 text-sm font-bold ${i===0?'bg-ink text-white':'border bg-white'}`}>{x}</button>)}</div><div className="mt-6 grid gap-6 md:grid-cols-2">{courses.slice(0,4).map(c=><CourseCard c={c} key={c.id}/>)}</div></>}
-function Analytics(){return <><h1 className="text-3xl font-black">Learning analytics</h1><p className="mt-2 text-slate-500">Understand your habits and strengthen weak areas.</p><div className="mt-8 grid gap-4 sm:grid-cols-3"><Metric icon={Clock} value="27h 45m" label="Total learning time" note="Across 8 active weeks"/><Metric icon={ClipboardCheck} value="86%" label="Average quiz score" note="↑ 7 points this month"/><Metric icon={CircleCheck} value="164" label="Lessons completed" note="12 completed this week"/></div><div className="mt-6 grid gap-6 md:grid-cols-2"><div className="card p-6"><h3 className="font-extrabold">Skills in progress</h3>{[['User research',88],['Prototyping',72],['Data storytelling',61],['Growth strategy',46]].map(([x,v])=><div key={x} className="mt-5"><div className="flex justify-between text-sm"><span>{x}</span><strong>{v}%</strong></div><div className="mt-2 h-2 rounded-full bg-slate-100"><div className="h-full rounded-full bg-spring-500" style={{width:v+'%'}}/></div></div>)}</div><div className="card p-6"><h3 className="font-extrabold">Focus opportunities</h3><p className="mt-2 text-sm text-slate-500">Based on quiz performance and lesson revisits.</p>{['Statistical significance','Accessibility heuristics','Retention cohorts'].map((x,i)=><div key={x} className="mt-4 flex items-center justify-between rounded-xl bg-amber-50 p-4"><div><p className="text-sm font-bold">{x}</p><p className="mt-1 text-xs text-slate-500">Recommended review · {8+i*3} min</p></div><ArrowRight size={17}/></div>)}</div></div></>}
-function Certificates(){return <><h1 className="text-3xl font-black">Certificates</h1><p className="mt-2 text-slate-500">Share proof of the skills you have earned.</p><div className="mt-8 grid gap-6 md:grid-cols-2">{['Design Thinking Foundations','Digital Productivity'].map((x,i)=><div key={x} className="card relative overflow-hidden p-7"><div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-spring-100"/><Award size={38} className="relative text-spring-600"/><p className="eyebrow mt-8">Certificate of completion</p><h3 className="mt-3 text-xl font-black">{x}</h3><p className="mt-2 text-sm text-slate-500">Issued August {12-i*7}, 2026</p><button className="btn-secondary mt-6 !py-2">View credential</button></div>)}</div></>}
-function Notifications(){return <><h1 className="text-3xl font-black">Notifications</h1><div className="card mt-8 divide-y">{[[CircleCheck,'Quiz result available','You scored 92% on “Research Methods”.','12 min ago'],[Bell,'Live session reminder','Product critique starts tomorrow at 6:00 PM.','2 hours ago'],[Award,'Certificate unlocked','Your Design Thinking certificate is ready.','Yesterday']].map(([I,t,d,time])=><div className="flex gap-4 p-5" key={t}><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-spring-50 text-spring-700"><I size={19}/></span><div className="flex-1"><p className="font-bold">{t}</p><p className="mt-1 text-sm text-slate-500">{d}</p></div><span className="text-xs text-slate-400">{time}</span></div>)}</div></>}
-function InstructorInvitationPage({user}){const{token}=useParams();const[status,setStatus]=useState('ready');const[message,setMessage]=useState('');async function accept(){if(!user){setStatus('login');return}setStatus('loading');try{const result=await api(`/instructor-invitations/${token}/accept`,{method:'POST'});localStorage.setItem('ss_user',JSON.stringify(result.user));setMessage('Your account is now an instructor account.');setStatus('accepted')}catch(e){if(import.meta.env.VITE_DEMO_MODE==='true'&&user?.role==='student'){const upgraded={...user,role:'instructor',status:'active'};localStorage.setItem('ss_user',JSON.stringify(upgraded));setMessage('Preview invitation accepted. Your account is now an instructor account.');setStatus('accepted')}else{setMessage(e.message);setStatus('error')}}}return <main className="mesh grid min-h-[calc(100vh-72px)] place-items-center px-5 py-16"><div className="card w-full max-w-xl p-8 text-center sm:p-10"><span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-spring-50 text-spring-700"><GraduationCap size={32}/></span><p className="eyebrow mt-6">Instructor invitation</p><h1 className="mt-3 text-3xl font-black">You’re invited to teach on SkillSpring</h1><p className="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-500">Accepting gives your account access to the instructor dashboard and course builder. This secure invitation is email-bound, single-use, and expires after 7 days.</p>{user?<div className="mt-6 rounded-xl border bg-slate-50 p-4 text-left"><p className="text-xs text-slate-400">Signed in as</p><p className="mt-1 font-bold">{user.name} · {user.email}</p></div>:<div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">Sign in with the exact email address that received this invitation before accepting.</div>}{status==='error'&&<p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{message}</p>}{status==='accepted'?<><div className="mt-6 rounded-xl bg-spring-50 p-4 font-bold text-spring-800"><CircleCheck className="mr-2 inline"/>{message}</div><a href="/dashboard" className="btn-primary mt-5">Open instructor dashboard <ArrowRight size={17}/></a></>:<button onClick={accept} disabled={status==='loading'} className="btn-primary mt-6 w-full">{status==='loading'?'Accepting invitation…':user?'Accept instructor invitation':'Sign in to continue'}<ArrowRight size={17}/></button>}<p className="mt-5 text-xs text-slate-400"><ShieldCheck size={13} className="mr-1 inline"/>The invitation cannot be transferred to another account.</p></div></main>}
-function CourseBuilder(){const nav=useNavigate();const[step,setStep]=useState('Details');const[saved,setSaved]=useState(false);const[course,setCourse]=useState(()=>{try{return JSON.parse(localStorage.getItem('ss_course_draft'))||{title:'',subtitle:'',category:'Design',level:'beginner',description:'',outcomes:[''],sections:[{id:Date.now(),title:'Getting started',lessons:[{id:Date.now()+1,title:'Welcome to the course',type:'video',duration:5}]}]}}catch{return{title:'',subtitle:'',category:'Design',level:'beginner',description:'',outcomes:[''],sections:[]}}});const steps=[['Details',FileText],['Curriculum',BookOpen],['Quiz',ClipboardCheck],['Publish',CircleCheck]];function update(k,v){setCourse({...course,[k]:v});setSaved(false)}function save(){localStorage.setItem('ss_course_draft',JSON.stringify(course));setSaved(true);setTimeout(()=>setSaved(false),1800)}function addSection(){update('sections',[...course.sections,{id:Date.now(),title:`New section ${course.sections.length+1}`,lessons:[]}])}function setSection(si,key,value){const sections=course.sections.map((s,i)=>i===si?{...s,[key]:value}:s);update('sections',sections)}function addLesson(si){const sections=course.sections.map((s,i)=>i===si?{...s,lessons:[...s.lessons,{id:Date.now(),title:'Untitled lesson',type:'video',duration:5}]}:s);update('sections',sections)}function setLesson(si,li,key,value){const sections=course.sections.map((s,i)=>i===si?{...s,lessons:s.lessons.map((l,j)=>j===li?{...l,[key]:value}:l)}:s);update('sections',sections)}function removeLesson(si,li){const sections=course.sections.map((s,i)=>i===si?{...s,lessons:s.lessons.filter((_,j)=>j!==li)}:s);update('sections',sections)}return <div className="min-h-[calc(100vh-72px)] bg-slate-50"><div className="border-b bg-white"><div className="container-page flex flex-wrap items-center justify-between gap-4 py-5"><div className="flex items-center gap-4"><button onClick={()=>nav('/dashboard')} className="grid h-10 w-10 place-items-center rounded-xl border"><ChevronLeft size={18}/></button><div><p className="text-xs font-bold uppercase tracking-wider text-spring-700">Course builder</p><h1 className="font-black">{course.title||'Untitled course'}</h1></div></div><div className="flex items-center gap-3"><span className={`text-xs font-bold ${saved?'text-spring-700':'text-slate-400'}`}>{saved?'Draft saved':'Unsaved changes'}</span><button onClick={save} className="btn-secondary !py-2.5">Save draft</button><button onClick={()=>setStep('Publish')} className="btn-primary !py-2.5">Review & publish</button></div></div></div><div className="container-page grid gap-8 py-8 lg:grid-cols-[230px_1fr]"><aside><div className="card sticky top-24 p-3">{steps.map(([s,I],i)=><button key={s} onClick={()=>setStep(s)} className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold ${step===s?'bg-ink text-white':'text-slate-500 hover:bg-slate-50'}`}><span className={`grid h-7 w-7 place-items-center rounded-lg ${step===s?'bg-white/10':'bg-slate-100'}`}><I size={15}/></span><span>{s}</span><span className="ml-auto text-[10px] opacity-50">0{i+1}</span></button>)}</div></aside><main className="min-w-0">{step==='Details'&&<section className="card p-6 sm:p-8"><p className="eyebrow">Step 1 of 4</p><h2 className="mt-2 text-2xl font-black">Course details</h2><p className="mt-2 text-sm text-slate-500">Help learners understand what they will achieve.</p><div className="mt-7 space-y-5"><label className="block"><span className="mb-2 block text-sm font-bold">Course title *</span><input className="input" value={course.title} onChange={e=>update('title',e.target.value)} placeholder="e.g. Product Design: From Research to Prototype"/><span className="mt-1 block text-right text-xs text-slate-400">{course.title.length}/80</span></label><label className="block"><span className="mb-2 block text-sm font-bold">Short subtitle</span><input className="input" value={course.subtitle} onChange={e=>update('subtitle',e.target.value)} placeholder="A clear one-line promise to your learners"/></label><div className="grid gap-5 sm:grid-cols-2"><label><span className="mb-2 block text-sm font-bold">Category</span><select className="input" value={course.category} onChange={e=>update('category',e.target.value)}>{['Design','Development','Data','Marketing','Business','AI'].map(x=><option key={x}>{x}</option>)}</select></label><label><span className="mb-2 block text-sm font-bold">Level</span><select className="input" value={course.level} onChange={e=>update('level',e.target.value)}><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option><option value="all-levels">All levels</option></select></label></div><label className="block"><span className="mb-2 block text-sm font-bold">Description *</span><textarea className="input min-h-36 resize-y" value={course.description} onChange={e=>update('description',e.target.value)} placeholder="Describe the course, its approach, and who it is for…"/></label><div className="flex justify-end"><button onClick={()=>setStep('Curriculum')} className="btn-primary">Continue to curriculum <ArrowRight size={17}/></button></div></div></section>}{step==='Curriculum'&&<section><div className="card p-6 sm:p-8"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="eyebrow">Step 2 of 4</p><h2 className="mt-2 text-2xl font-black">Build your curriculum</h2><p className="mt-2 text-sm text-slate-500">Organize lessons into clear, focused sections.</p></div><button onClick={addSection} className="btn-secondary !py-2.5"><Plus size={16}/>Add section</button></div></div><div className="mt-5 space-y-5">{course.sections.map((section,si)=><div className="card overflow-hidden" key={section.id}><div className="flex items-center gap-3 border-b bg-slate-50 p-4"><span className="grid h-8 w-8 place-items-center rounded-lg bg-white text-xs font-black">{si+1}</span><input className="min-w-0 flex-1 bg-transparent font-extrabold outline-none" value={section.title} onChange={e=>setSection(si,'title',e.target.value)}/><span className="text-xs text-slate-400">{section.lessons.length} lessons</span></div><div className="p-4">{section.lessons.map((lesson,li)=><div key={lesson.id} className="mb-3 grid items-center gap-3 rounded-xl border p-3 sm:grid-cols-[32px_1fr_130px_85px_32px]"><span className="grid h-8 w-8 place-items-center rounded-lg bg-spring-50 text-spring-700">{lesson.type==='video'?<Video size={15}/>:lesson.type==='quiz'?<ClipboardCheck size={15}/>:<FileText size={15}/>}</span><input className="min-w-0 bg-transparent text-sm font-bold outline-none" value={lesson.title} onChange={e=>setLesson(si,li,'title',e.target.value)}/><select className="rounded-lg border bg-white px-2 py-2 text-xs" value={lesson.type} onChange={e=>setLesson(si,li,'type',e.target.value)}><option value="video">Video</option><option value="text">Text lesson</option><option value="quiz">Quiz</option><option value="assignment">Assignment</option></select><label className="flex items-center gap-1 text-xs text-slate-400"><input type="number" min="1" className="w-12 rounded-md border p-1" value={lesson.duration} onChange={e=>setLesson(si,li,'duration',+e.target.value)}/>min</label><button onClick={()=>removeLesson(si,li)} className="text-slate-300 hover:text-red-500"><X size={17}/></button></div>)}<button onClick={()=>addLesson(si)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-spring-700 hover:bg-spring-50"><Plus size={16}/>Add lesson</button></div></div>)}{course.sections.length===0&&<div className="card py-14 text-center"><BookOpen className="mx-auto text-slate-300" size={34}/><p className="mt-3 font-bold">No sections yet</p><button onClick={addSection} className="btn-primary mt-5"><Plus size={16}/>Add your first section</button></div>}</div></section>}{step==='Quiz'&&<section className="card p-6 sm:p-8"><p className="eyebrow">Step 3 of 4</p><h2 className="mt-2 text-2xl font-black">Assessments</h2><p className="mt-2 text-sm text-slate-500">Add quizzes from the curriculum lesson type, then configure their rules here.</p><div className="mt-7 rounded-2xl border border-dashed border-spring-300 bg-spring-50 p-8 text-center"><ClipboardCheck className="mx-auto text-spring-600" size={38}/><h3 className="mt-4 font-extrabold">Create a course quiz</h3><p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Build multiple-choice questions with explanations, passing scores, timers, and attempt limits.</p><button className="btn-primary mt-5"><Plus size={16}/>New quiz</button></div><div className="mt-6 grid gap-4 sm:grid-cols-3">{[['Passing score','70%'],['Attempt limit','3 attempts'],['Time limit','20 minutes']].map(([a,b])=><div key={a} className="rounded-xl border p-4"><p className="text-xs text-slate-400">{a}</p><p className="mt-1 font-extrabold">{b}</p></div>)}</div></section>}{step==='Publish'&&<section className="card p-6 sm:p-8"><p className="eyebrow">Step 4 of 4</p><h2 className="mt-2 text-2xl font-black">Ready to publish?</h2><p className="mt-2 text-sm text-slate-500">Review the checklist before submitting your course for approval.</p><div className="mt-7 space-y-3">{[[course.title.length>3,'Course has a clear title'],[course.description.length>20,'Description is complete'],[course.sections.length>0,'At least one curriculum section'],[course.sections.some(s=>s.lessons.length>0),'At least one lesson added']].map(([ok,text])=><div key={text} className={`flex items-center gap-3 rounded-xl border p-4 ${ok?'border-spring-200 bg-spring-50':'border-amber-200 bg-amber-50'}`}><span className={`grid h-7 w-7 place-items-center rounded-full ${ok?'bg-spring-600 text-white':'bg-amber-200 text-amber-800'}`}>{ok?<Check size={15}/>:<span className="text-xs font-black">!</span>}</span><span className="text-sm font-bold">{text}</span></div>)}</div><div className="mt-8 flex flex-wrap justify-end gap-3"><button onClick={save} className="btn-secondary">Save as draft</button><button disabled={!course.title||!course.description||!course.sections.length} onClick={()=>{save();alert('Course submitted for admin review.');nav('/dashboard')}} className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"><ShieldCheck size={17}/>Submit for review</button></div></section>}</main></div></div>}
-function Player(){const{id}=useParams();const c=courses.find(x=>x.id===id)||courses[0];const[done,setDone]=useState(false);const[ai,setAi]=useState(false);return <div className="min-h-screen bg-slate-950 text-white"><div className="flex h-16 items-center justify-between border-b border-white/10 px-5"><Link to="/dashboard" className="flex items-center gap-2 text-sm"><ChevronLeft/>Back to dashboard</Link><div className="font-bold">{c.title}</div><span className="text-sm text-white/50">16 / {c.lessons}</span></div><div className="grid min-h-[calc(100vh-64px)] lg:grid-cols-[1fr_340px]"><main className="p-5 lg:p-8"><div className="grid aspect-video place-items-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900"><div className="text-center"><button className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-spring-500 text-white shadow-xl"><Play size={28} fill="currentColor"/></button><p className="mt-5 text-sm text-white/50">Video lesson preview</p></div></div><div className="mx-auto max-w-4xl py-8"><p className="eyebrow !text-spring-400">Section 3 · Testing ideas</p><h1 className="mt-3 text-3xl font-black">Prototype testing: observe, learn, improve</h1><p className="mt-4 leading-7 text-white/60">Learn how to plan a focused usability session, observe without leading, and turn evidence into clear design decisions.</p><div className="mt-7 flex flex-wrap gap-3"><button onClick={()=>setDone(!done)} className={`btn-primary ${done?'!bg-white !text-ink':''}`}>{done?<Check/>:<CircleCheck/>}{done?'Completed':'Mark complete'}</button><button onClick={()=>setAi(!ai)} className="rounded-xl border border-white/15 px-5 py-3 text-sm font-bold hover:bg-white/5"><BrainCircuit className="mr-2 inline" size={17}/>Ask AI tutor</button></div>{ai&&<div className="mt-5 rounded-2xl border border-spring-500/30 bg-spring-500/10 p-5"><div className="flex gap-3"><BrainCircuit className="shrink-0 text-spring-400"/><div><p className="font-bold">SkillSpring Tutor</p><p className="mt-2 text-sm leading-6 text-white/70">Try thinking of prototype testing as a low-cost conversation with your design. You are not testing the participant—you are testing whether the interface communicates clearly. What part would you like me to explain?</p><input className="mt-4 w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm" placeholder="Ask a follow-up question…"/></div></div></div>}</div></main><aside className="border-l border-white/10 bg-slate-900 p-5"><div className="flex items-center justify-between"><h2 className="font-extrabold">Course content</h2><span className="text-xs text-white/40">68%</span></div><div className="mt-4 h-1.5 rounded-full bg-white/10"><div className="h-full w-[68%] rounded-full bg-spring-500"/></div>{['Welcome and foundations','Research that reveals needs','Testing ideas','From insight to iteration'].map((s,i)=><div key={s} className="mt-5"><p className="text-xs font-extrabold uppercase tracking-wider text-white/40">{i+1}. {s}</p>{['Lesson overview','Key concepts','Practice and reflect'].map((l,j)=><button key={l} className={`mt-2 flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm ${i===2&&j===1?'bg-spring-500/15 text-spring-300':'text-white/60 hover:bg-white/5'}`}>{i<2||i===2&&j===0?<CircleCheck size={16} className="text-spring-400"/>:<Play size={15}/>}<span>{l}</span><span className="ml-auto text-[10px]">{5+j*2}:20</span></button>)}</div>)}</aside></div></div>}
-function AuthModal({mode,onClose,onSuccess}){const[form,setForm]=useState({name:'',email:'',password:'',role:'student'});const[err,setErr]=useState('');const[busy,setBusy]=useState(false);async function submit(e){e.preventDefault();setBusy(true);setErr('');try{const r=await api(`/auth/${mode}`,{method:'POST',body:JSON.stringify(mode==='register'?{name:form.name,email:form.email,password:form.password}:{email:form.email,password:form.password})});localStorage.setItem('ss_token',r.token);localStorage.setItem('ss_user',JSON.stringify(r.user));onSuccess(r.user)}catch(e){if(import.meta.env.VITE_DEMO_MODE==='true'){try{let demoUser;if(mode==='register'){demoUser={name:form.name,email:form.email,role:'student',status:'active'};localStorage.setItem('ss_demo_user',JSON.stringify(demoUser))}else{demoUser=JSON.parse(localStorage.getItem('ss_demo_user')||'null');if(!demoUser||demoUser.email.toLowerCase()!==form.email.toLowerCase()){setErr('No preview account found. Create an account first.');return}}localStorage.setItem('ss_token','preview-session');localStorage.setItem('ss_user',JSON.stringify(demoUser));onSuccess(demoUser)}catch{setErr('Preview storage is unavailable. Please refresh and try again.')}}else setErr(e.message)}finally{setBusy(false)}}return <div className="fixed inset-0 z-50 grid place-items-center bg-ink/70 p-4 backdrop-blur-sm"><div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl"><div className="flex items-center justify-between"><Brand/><button onClick={onClose} className="rounded-lg p-2 hover:bg-slate-100"><X/></button></div><h2 className="mt-8 text-3xl font-black">{mode==='login'?'Welcome back':'Start growing today'}</h2><p className="mt-2 text-sm text-slate-500">{mode==='login'?'Continue your learning journey.':'Create your free SkillSpring account.'}</p><form onSubmit={submit} className="mt-6 space-y-4">{mode==='register'&&<><input required className="input" placeholder="Full name" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/><div className="rounded-xl border border-spring-200 bg-spring-50 p-3 text-xs leading-5 text-spring-800"><ShieldCheck size={15} className="mr-2 inline"/>New accounts are students. Instructor access is granted by administrator invitation only.</div></>}<input required type="email" className="input" placeholder="Email address" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/><input required minLength="8" type="password" className="input" placeholder="Password (8+ characters)" value={form.password} onChange={e=>setForm({...form,password:e.target.value})}/>{err&&<p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{err}</p>}<button disabled={busy} className="btn-primary w-full">{busy?'Please wait…':mode==='login'?'Log in':'Create account'}<ArrowRight size={17}/></button></form><p className="mt-5 text-center text-xs text-slate-400"><Lock size={12} className="mr-1 inline"/>Protected with secure authentication</p></div></div>}
-function SettingsPage({user,onAuth,onLogout}){if(!user)return <main className="mesh grid min-h-[calc(100vh-72px)] place-items-center px-5 py-16"><div className="card w-full max-w-md p-8 text-center"><Lock className="mx-auto text-spring-600" size={34}/><h1 className="mt-5 text-3xl font-black">Log in required</h1><p className="mt-3 text-sm text-slate-500">Log in to view and manage your account settings.</p><button onClick={()=>onAuth('login')} className="btn-primary mt-6 w-full">Log in</button></div></main>;return <main className="min-h-[calc(100vh-72px)] bg-slate-50"><div className="container-page max-w-4xl py-10"><p className="eyebrow">Your account</p><h1 className="mt-2 text-3xl font-black">Settings</h1><p className="mt-2 text-sm text-slate-500">Review your signed-in account and session controls.</p><div className="mt-8 grid gap-6 md:grid-cols-[1fr_300px]"><section className="card p-6"><h2 className="text-xl font-black">Profile</h2><div className="mt-6 flex items-center gap-4"><span className="grid h-16 w-16 place-items-center rounded-2xl bg-spring-100 text-lg font-black text-spring-800">{user.name?.split(' ').map(x=>x[0]).join('').slice(0,2)||'U'}</span><div><p className="text-lg font-extrabold">{user.name}</p><p className="mt-1 text-sm text-slate-500">{user.email}</p><span className="mt-2 inline-block rounded-full bg-spring-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-spring-700">{user.role}</span></div></div><div className="mt-7 grid gap-4 sm:grid-cols-2"><label><span className="mb-2 block text-sm font-bold">Full name</span><input className="input" value={user.name||''} readOnly/></label><label><span className="mb-2 block text-sm font-bold">Email address</span><input className="input" value={user.email||''} readOnly/></label></div><p className="mt-4 text-xs text-slate-400">Role changes are controlled by the platform administrator and cannot be edited here.</p></section><aside className="card h-fit p-6"><h2 className="font-black">Login & security</h2><div className="mt-5 rounded-xl bg-spring-50 p-4"><p className="text-xs font-bold uppercase tracking-wider text-spring-700">Current session</p><p className="mt-2 text-sm font-bold">You are logged in</p><p className="mt-1 text-xs text-slate-500">Signed in as {user.email}</p></div><button onClick={onLogout} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-red-50 px-5 py-3 text-sm font-bold text-red-700 hover:bg-red-100"><LogOut size={17}/>Log out</button></aside></div></div></main>}
-function Footer(){const groups=[['Learn',['Browse courses','Learning paths','Certificates']],['Teach',['Become an instructor','Instructor resources','Course builder']],['Company',['About','For teams','Help center']]];return <footer className="border-t border-slate-200 bg-white"><div className="container-page py-10 sm:py-14"><div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_.75fr_.75fr_.75fr]"><div className="sm:col-span-2 lg:col-span-1"><Brand/><p className="mt-4 max-w-sm text-sm leading-6 text-slate-500">Practical, expert-led learning for people ready to grow their skills and shape what comes next.</p><div className="mt-6 flex flex-col gap-3 min-[420px]:flex-row"><Link to="/courses" className="btn-primary !py-2.5">Explore courses <ArrowRight size={16}/></Link><Link to="/settings" className="btn-secondary !py-2.5">Account settings</Link></div></div>{groups.map(([heading,items])=><div key={heading}><h3 className="text-sm font-extrabold text-ink">{heading}</h3><ul className="mt-4 space-y-3">{items.map(item=><li key={item}><a href={item==='Browse courses'?'/courses':'#'} className="text-sm text-slate-500 hover:text-spring-700">{item}</a></li>)}</ul></div>)}</div><div className="mt-10 border-t border-slate-200 pt-6 sm:mt-12"><div className="flex flex-col gap-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between"><p>© 2026 SkillSpring. Learn boldly.</p><div className="flex flex-wrap gap-x-5 gap-y-2"><a href="#" className="hover:text-spring-700">Privacy</a><a href="#" className="hover:text-spring-700">Terms</a><a href="#" className="hover:text-spring-700">Accessibility</a></div></div></div></div></footer>}
-function AdminRoute({user,children}){if(!user)return <Navigate to="/" replace/>;if(user.role!=='admin')return <Navigate to="/dashboard" replace/>;return children}
-export default function App(){
-  const[auth,setAuth]=useState(null);
-  const[user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem('ss_user'))}catch{return null}});
-  const loc=useLocation();
-  useEffect(()=>{window.scrollTo(0,0)},[loc.pathname]);
-  const standalone=loc.pathname.startsWith('/learn/');
-  function logout(){localStorage.removeItem('ss_token');localStorage.removeItem('ss_user');localStorage.removeItem('ss_demo_user');setUser(null);setAuth(null);window.location.href='/'}
-  return <>{!standalone&&<Navbar user={user} onAuth={setAuth} onLogout={logout}/>}<Routes><Route path="/" element={<Home/>}/><Route path="/courses" element={<Courses/>}/><Route path="/course/:id" element={<CourseDetail/>}/><Route path="/dashboard" element={<Dashboard user={user}/>}/><Route path="/admin" element={<AdminRoute user={user}><AdminDashboard/></AdminRoute>}/><Route path="/settings" element={<SettingsPage user={user} onAuth={setAuth} onLogout={logout}/>}/><Route path="/invitations/instructor/:token" element={<InstructorInvitationPage user={user}/>}/><Route path="/instructor/courses/new" element={<CourseBuilder/>}/><Route path="/learn/:id" element={<Player/>}/><Route path="*" element={<Home/>}/></Routes>{!standalone&&<Footer/>}{auth&&<AuthModal mode={auth} onClose={()=>setAuth(null)} onSuccess={u=>{setUser(u);setAuth(null);window.location.href='/dashboard'}}/>}</>
+
+function Navbar({ user, onAuth, onLogout }) {
+  const [open, setOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
+  const dashboardPath = user?.role === 'admin' ? '/admin' : '/dashboard';
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
+      <div className="container-page flex h-18 items-center justify-between py-3">
+        <Brand />
+
+        <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-600 md:flex">
+          <Link className="hover:text-spring-700" to="/courses">
+            Explore courses
+          </Link>
+
+          {/* FIXED FOR GITHUB PAGES */}
+          <a className="hover:text-spring-700" href="#outcomes">
+            For teams
+          </a>
+
+          <a className="hover:text-spring-700" href="#why">
+            Why SkillSpring
+          </a>
+        </nav>
+
+        <div className="hidden items-center gap-3 md:flex">
+          {user ? (
+            <>
+              <Link className="btn-secondary !py-2.5" to={dashboardPath}>
+                <LayoutDashboard size={17} />
+                Dashboard
+              </Link>
+
+              <div className="relative">
+                <button
+                  onClick={() => setAccountOpen(!accountOpen)}
+                  className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 hover:border-spring-300"
+                  aria-expanded={accountOpen}
+                >
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-spring-100 text-xs font-black text-spring-800">
+                    {user.name
+                      ?.split(' ')
+                      .map((x) => x[0])
+                      .join('')
+                      .slice(0, 2) || 'U'}
+                  </span>
+
+                  <span className="max-w-28 truncate text-left text-sm font-bold">
+                    {user.name}
+                  </span>
+
+                  <ChevronDown size={15} />
+                </button>
+
+                {accountOpen && (
+                  <div className="absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border bg-white p-2 shadow-soft">
+                    <div className="border-b px-3 py-3">
+                      <p className="truncate text-sm font-bold">
+                        {user.name}
+                      </p>
+
+                      <p className="mt-1 truncate text-xs text-slate-400">
+                        {user.email}
+                      </p>
+
+                      <span className="mt-2 inline-block rounded-full bg-spring-50 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-spring-700">
+                        {user.role}
+                      </span>
+                    </div>
+
+                    <Link
+                      onClick={() => setAccountOpen(false)}
+                      to="/settings"
+                      className="mt-2 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50"
+                    >
+                      <Settings size={17} />
+                      Account settings
+                    </Link>
+
+                    <button
+                      onClick={onLogout}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-red-600 hover:bg-red-50"
+                    >
+                      <LogOut size={17} />
+                      Log out
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => onAuth('login')}
+                className="px-3 py-2 text-sm font-bold"
+              >
+                Log in
+              </button>
+
+              <button
+                onClick={() => onAuth('register')}
+                className="btn-primary !py-2.5"
+              >
+                Start learning
+              </button>
+            </>
+          )}
+        </div>
+
+        <button
+          className="md:hidden"
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <X /> : <Menu />}
+        </button>
+      </div>
+
+      {open && (
+        <div className="border-t bg-white p-5 md:hidden">
+          <div className="flex flex-col gap-4 font-semibold">
+            <Link to="/courses">Explore courses</Link>
+
+            <a href="#why">Why SkillSpring</a>
+
+            {user ? (
+              <>
+                <Link to={dashboardPath} className="btn-secondary">
+                  <LayoutDashboard size={17} />
+                  Dashboard
+                </Link>
+
+                <Link to="/settings" className="btn-secondary">
+                  <Settings size={17} />
+                  Account settings
+                </Link>
+
+                <button
+                  onClick={onLogout}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-red-50 px-5 py-3 text-sm font-bold text-red-700"
+                >
+                  <LogOut size={17} />
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => onAuth('login')}
+                  className="btn-secondary"
+                >
+                  Log in
+                </button>
+
+                <button
+                  onClick={() => onAuth('register')}
+                  className="btn-primary"
+                >
+                  Start learning
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function Home() {
+  return (
+    <>
+      <section className="mesh overflow-hidden border-b border-slate-100">
+        <div className="container-page grid min-h-[680px] items-center gap-14 py-16 lg:grid-cols-[1.03fr_.97fr]">
+          <div>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-spring-200 bg-white/80 px-3.5 py-2 text-xs font-bold text-spring-800">
+              <Sparkles size={15} />
+              Learning that adapts to you
+            </div>
+
+            <h1 className="max-w-2xl text-5xl font-black leading-[1.03] tracking-[-.045em] sm:text-6xl lg:text-7xl">
+              Grow skills.
+              <br />
+              <span className="text-spring-600">
+                Shape your future.
+              </span>
+            </h1>
+
+            <p className="mt-7 max-w-xl text-lg leading-8 text-slate-600">
+              Learn from experts, practice with purpose, and stay on track
+              with an AI-powered learning experience built around your goals.
+            </p>
+
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link
+                to="/courses"
+                className="btn-primary !px-6 !py-3.5"
+              >
+                Explore courses
+                <ArrowRight size={18} />
+              </Link>
+
+              <Link
+                to="/course/product-design"
+                className="btn-secondary !px-6 !py-3.5"
+              >
+                <Play size={17} fill="currentColor" />
+                See how it works
+              </Link>
+            </div>
+
+            <div className="mt-8 flex items-center gap-4 text-sm text-slate-500">
+              <div className="flex -space-x-2">
+                {['MC', 'OK', 'SW', 'NA'].map((x, i) => (
+                  <div
+                    key={x}
+                    className={`grid h-9 w-9 place-items-center rounded-full border-2 border-white text-[10px] font-extrabold ${
+                      [
+                        'bg-amber-200',
+                        'bg-blue-200',
+                        'bg-rose-200',
+                        'bg-violet-200'
+                      ][i]
+                    }`}
+                  >
+                    {x}
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <span className="font-extrabold text-ink">4.9</span>{' '}
+                <span className="text-amber-500">★★★★★</span>
+                <br />
+                <span className="text-xs">
+                  Loved by 50,000+ learners
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <HeroVisual />
+        </div>
+      </section>
+
+      <section className="border-b bg-white" id="outcomes">
+        <div className="container-page grid grid-cols-2 gap-6 py-8 sm:grid-cols-4">
+          {stats.map(([a, b]) => (
+            <div key={b} className="text-center">
+              <div className="text-2xl font-black tracking-tight">
+                {a}
+              </div>
+              <div className="mt-1 text-xs font-medium text-slate-500">
+                {b}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Popular />
+      <Why />
+      <CTA />
+    </>
+  );
+}
+
+function HeroVisual() {
+  return (
+    <div className="relative mx-auto w-full max-w-[560px]">
+      <div className="absolute -inset-8 rounded-full bg-spring-200/30 blur-3xl" />
+
+      <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-4 shadow-soft">
+        <div className="rounded-2xl bg-ink p-6 text-white">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold">
+              Your learning space
+            </span>
+
+            <span className="rounded-full bg-white/10 px-3 py-1 text-[11px]">
+              Week 7
+            </span>
+          </div>
+
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="rounded-xl bg-white/10 p-4">
+              <p className="text-xs text-white/60">
+                Learning streak
+              </p>
+
+              <p className="mt-2 text-3xl font-black">
+                12{' '}
+                <span className="text-sm font-medium">
+                  days
+                </span>
+              </p>
+
+              <div className="mt-3 flex gap-1">
+                {[1, 1, 1, 1, 1, 1, 0].map((x, i) => (
+                  <span
+                    key={i}
+                    className={`h-6 w-2 rounded-full ${
+                      x
+                        ? 'bg-spring-400'
+                        : 'bg-white/15'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl bg-spring-500 p-4">
+              <p className="text-xs text-white/80">
+                Weekly goal
+              </p>
+
+              <p className="mt-2 text-3xl font-black">
+                78%
+              </p>
+
+              <div className="mt-4 h-2 rounded-full bg-black/15">
+                <div className="h-full w-[78%] rounded-full bg-white" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-slate-100 p-5">
+          <div className="flex items-center gap-4">
+            <div className="grid h-14 w-14 place-items-center rounded-xl bg-amber-100 text-2xl">
+              ✦
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex justify-between gap-3">
+                <p className="truncate font-extrabold">
+                  Product Design Essentials
+                </p>
+
+                <span className="text-xs font-bold text-spring-700">
+                  68%
+                </span>
+              </div>
+
+              <p className="mt-1 text-xs text-slate-500">
+                Lesson 16 · Prototype testing
+              </p>
+
+              <div className="mt-3 h-1.5 rounded-full bg-slate-100">
+                <div className="h-full w-[68%] rounded-full bg-spring-500" />
+              </div>
+            </div>
+
+            <button className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white">
+              <Play size={15} fill="currentColor" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute -right-5 top-12 hidden rounded-xl bg-white p-3 shadow-soft sm:block">
+        <div className="flex items-center gap-2 text-xs font-bold">
+          <CircleCheck
+            className="text-spring-600"
+            size={20}
+          />
+          Lesson complete!
+        </div>
+      </div>
+
+      <div className="absolute -bottom-6 -left-8 hidden max-w-48 rounded-xl bg-white p-4 shadow-soft sm:block">
+        <div className="flex items-center gap-2 text-xs font-bold">
+          <BrainCircuit
+            className="text-violet-600"
+            size={20}
+          />
+          AI study insight
+        </div>
+
+        <p className="mt-2 text-[11px] leading-4 text-slate-500">
+          You retain more with 20-minute focused sessions.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function Popular() {
+  return (
+    <section className="py-24">
+      <div className="container-page">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="eyebrow">
+              Discover your next skill
+            </p>
+
+            <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
+              Courses learners love
+            </h2>
+          </div>
+
+          <Link
+            to="/courses"
+            className="hidden items-center gap-1 text-sm font-bold text-spring-700 sm:flex"
+          >
+            Browse all
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {courses.slice(0, 3).map((c) => (
+            <CourseCard key={c.id} c={c} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CourseCard({ c }) {
+  return (
+    <Link
+      to={`/course/${c.id}`}
+      className="card group overflow-hidden hover:-translate-y-1 hover:shadow-soft"
+    >
+      <div
+        className={`relative grid h-44 place-items-center bg-gradient-to-br ${c.color}`}
+      >
+        <span className="text-5xl font-black text-ink/70">
+          {c.icon}
+        </span>
+
+        <span className="absolute left-4 top-4 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider">
+          {c.category}
+        </span>
+
+        <span className="absolute bottom-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-lg group-hover:bg-spring-600 group-hover:text-white">
+          <Play size={16} fill="currentColor" />
+        </span>
+      </div>
+
+      <div className="p-5">
+        <div className="flex items-center gap-3 text-xs text-slate-500">
+          <span className="flex items-center gap-1">
+            <Star
+              size={13}
+              className="fill-amber-400 text-amber-400"
+            />
+            {c.rating}
+          </span>
+
+          <span>·</span>
+          <span>{c.level}</span>
+          <span>·</span>
+          <span>{c.hours}h</span>
+        </div>
+
+        <h3 className="mt-3 min-h-12 text-lg font-extrabold leading-6 group-hover:text-spring-700">
+          {c.title}
+        </h3>
+
+        <p className="mt-3 text-sm text-slate-500">
+          By {c.instructor}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
+function Why() {
+  const items = [
+    [
+      Target,
+      'Learning with direction',
+      'Personalized paths and weekly goals keep every session focused.'
+    ],
+    [
+      BrainCircuit,
+      'An AI tutor in your corner',
+      'Get clear explanations and helpful nudges exactly when you need them.'
+    ],
+    [
+      TrendingUp,
+      'Progress you can see',
+      'Turn learning activity into insights, momentum, and measurable growth.'
+    ],
+    [
+      Award,
+      'Proof of your progress',
+      'Earn verified certificates that showcase the skills you have built.'
+    ]
+  ];
+
+  return (
+    <section id="why" className="bg-ink py-24 text-white">
+      <div className="container-page grid gap-14 lg:grid-cols-[.8fr_1.2fr]">
+        <div>
+          <p className="eyebrow !text-spring-300">
+            Built for real progress
+          </p>
+
+          <h2 className="mt-4 text-4xl font-black tracking-tight">
+            More than watching videos.
+          </h2>
+
+          <p className="mt-5 leading-7 text-white/60">
+            SkillSpring brings practice, feedback, community, and insight
+            together—so learning turns into capability.
+          </p>
+        </div>
+
+        <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2">
+          {items.map(([I, t, d]) => (
+            <div key={t} className="bg-ink p-7">
+              <I className="text-spring-400" />
+
+              <h3 className="mt-5 font-extrabold">
+                {t}
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-white/55">
+                {d}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CTA() {
+  return (
+    <section className="py-20">
+      <div className="container-page">
+        <div className="mesh overflow-hidden rounded-[2rem] border border-spring-100 bg-spring-50 px-6 py-16 text-center sm:px-12">
+          <GraduationCap
+            className="mx-auto text-spring-600"
+            size={40}
+          />
+
+          <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-black tracking-tight">
+            Your next chapter starts with one lesson.
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-xl text-slate-600">
+            Join thousands of curious learners building skills for work and
+            life.
+          </p>
+
+          <Link
+            className="btn-primary mt-8"
+            to="/courses"
+          >
+            Start learning for free
+            <ArrowRight size={17} />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Courses() {
+  const [q, setQ] = useState('');
+  const [cat, setCat] = useState('All');
+
+  const list = courses.filter(
+    (c) =>
+      (cat === 'All' || c.category === cat) &&
+      c.title.toLowerCase().includes(q.toLowerCase())
+  );
+
+  return (
+    <main>
+      <section className="border-b bg-spring-50 py-16">
+        <div className="container-page">
+          <p className="eyebrow">Course library</p>
+
+          <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
+            Learn something that matters.
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-slate-600">
+            Expert-led courses, practical projects, and support at every step.
+          </p>
+
+          <div className="relative mt-8 max-w-2xl">
+            <Search
+              className="absolute left-4 top-3.5 text-slate-400"
+              size={20}
+            />
+
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="input !py-3.5 !pl-12 shadow-sm"
+              placeholder="Search courses, topics, or skills"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="container-page py-12">
+        <div className="mb-8 flex flex-wrap gap-2">
+          {[
+            'All',
+            'Design',
+            'Data',
+            'Marketing',
+            'Development',
+            'Business',
+            'AI'
+          ].map((x) => (
+            <button
+              onClick={() => setCat(x)}
+              key={x}
+              className={`rounded-full px-4 py-2 text-sm font-bold ${
+                cat === x
+                  ? 'bg-ink text-white'
+                  : 'border bg-white text-slate-600 hover:border-spring-300'
+              }`}
+            >
+              {x}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {list.map((c) => (
+            <CourseCard c={c} key={c.id} />
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function CourseDetail() {
+  const { id } = useParams();
+  const c = courses.find((x) => x.id === id) || courses[0];
+  const nav = useNavigate();
+
+  return (
+    <main>
+      <section className="bg-ink py-16 text-white">
+        <div className="container-page grid items-center gap-10 lg:grid-cols-[1fr_380px]">
+          <div>
+            <Link
+              to="/courses"
+              className="mb-8 inline-flex items-center gap-1 text-sm text-white/60 hover:text-white"
+            >
+              <ChevronLeft size={16} />
+              All courses
+            </Link>
+
+            <div className="eyebrow !text-spring-300">
+              {c.category} · {c.level}
+            </div>
+
+            <h1 className="mt-4 max-w-3xl text-4xl font-black leading-tight tracking-tight sm:text-5xl">
+              {c.title}
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/65">
+              {c.description}
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-5 text-sm">
+              <span className="flex items-center gap-1">
+                <Star
+                  size={16}
+                  className="fill-amber-400 text-amber-400"
+                />
+                {c.rating} rating
+              </span>
+
+              <span className="flex items-center gap-1">
+                <Users size={16} />
+                {c.students} learners
+              </span>
+
+              <span className="flex items-center gap-1">
+                <Clock size={16} />
+                {c.hours} hours
+              </span>
+            </div>
+
+            <p className="mt-7 text-sm">
+              Created by{' '}
+              <strong className="text-spring-300">
+                {c.instructor}
+              </strong>
+            </p>
+          </div>
+
+          <div className="card overflow-hidden text-ink">
+            <div
+              className={`grid h-48 place-items-center bg-gradient-to-br ${c.color}`}
+            >
+              <button className="grid h-16 w-16 place-items-center rounded-full bg-white shadow-xl">
+                <Play fill="currentColor" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="text-2xl font-black">
+                Free to enroll
+              </div>
+
+              <button
+                onClick={() => nav('/dashboard')}
+                className="btn-primary mt-5 w-full"
+              >
+                Enroll now
+                <ArrowRight size={17} />
+              </button>
+
+              <p className="mt-3 text-center text-xs text-slate-400">
+                Full lifetime access · Certificate included
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-page grid gap-12 py-16 lg:grid-cols-[1fr_340px]">
+        <div>
+          <h2 className="text-2xl font-black">
+            What you’ll learn
+          </h2>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {[
+              'Apply a practical end-to-end workflow',
+              'Build portfolio-ready projects',
+              'Use proven tools with confidence',
+              'Explain key ideas in plain language'
+            ].map((x) => (
+              <div
+                key={x}
+                className="flex gap-3 rounded-xl border bg-white p-4 text-sm"
+              >
+                <Check
+                  className="shrink-0 text-spring-600"
+                  size={18}
+                />
+                {x}
+              </div>
+            ))}
+          </div>
+
+          <h2 className="mt-12 text-2xl font-black">
+            Course curriculum
+          </h2>
+
+          {[
+            'Foundations and first principles',
+            'Tools, methods, and guided practice',
+            'Building your capstone project',
+            'Review, assessment, and next steps'
+          ].map((x, i) => (
+            <div
+              key={x}
+              className="mt-3 flex items-center justify-between rounded-xl border bg-white p-5"
+            >
+              <div className="flex items-center gap-4">
+                <span className="grid h-8 w-8 place-items-center rounded-lg bg-spring-50 text-xs font-black text-spring-700">
+                  0{i + 1}
+                </span>
+
+                <div>
+                  <p className="font-bold">{x}</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {5 + i} lessons · {55 + i * 12} min
+                  </p>
+                </div>
+              </div>
+
+              <ChevronDown size={18} />
+            </div>
+          ))}
+        </div>
+
+        <aside>
+          <div className="card p-6">
+            <h3 className="font-extrabold">
+              This course includes
+            </h3>
+
+            <div className="mt-5 space-y-4 text-sm text-slate-600">
+              {[
+                [Video, `${c.hours} hours on-demand video`],
+                [FileText, 'Downloadable resources'],
+                [ClipboardCheck, 'Quizzes and practice tasks'],
+                [BrainCircuit, 'AI tutor support'],
+                [Award, 'Verified certificate']
+              ].map(([I, t]) => (
+                <div
+                  key={t}
+                  className="flex items-center gap-3"
+                >
+                  <I
+                    size={17}
+                    className="text-spring-600"
+                  />
+                  {t}
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  );
+}
+
+function Dashboard({ user }) {
+  const [tab, setTab] = useState('Overview');
+
+  if (user?.role === 'instructor') {
+    return <InstructorDashboard user={user} />;
+  }
+
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  const tabs = [
+    ['Overview', LayoutDashboard],
+    ['My learning', BookOpen],
+    ['Analytics', BarChart3],
+    ['Certificates', Award],
+    ['Notifications', Bell]
+  ];
+
+  return (
+    <div className="min-h-[calc(100vh-72px)] bg-slate-50">
+      <div className="container-page flex gap-7 py-8">
+        <aside className="hidden w-56 shrink-0 lg:block">
+          <div className="sticky top-24 space-y-1">
+            {tabs.map(([t, I]) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold ${
+                  tab === t
+                    ? 'bg-ink text-white'
+                    : 'text-slate-500 hover:bg-white'
+                }`}
+              >
+                <I size={18} />
+                {t}
+              </button>
+            ))}
+
+            <div className="my-3 border-t" />
+
+            <Link
+              to="/settings"
+              className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-500 hover:bg-white"
+            >
+              <Settings size={18} />
+              Settings
+            </Link>
+          </div>
+        </aside>
+
+        <main className="min-w-0 flex-1">
+          {tab === 'Overview' ? (
+            <Overview user={user} />
+          ) : tab === 'My learning' ? (
+            <MyLearning />
+          ) : tab === 'Analytics' ? (
+            <Analytics />
+          ) : tab === 'Certificates' ? (
+            <Certificates />
+          ) : (
+            <Notifications />
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function InstructorDashboard({ user }) {
+  return (
+    <div className="min-h-[calc(100vh-72px)] bg-slate-50">
+      <main className="container-page py-9">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">
+              Instructor workspace
+            </p>
+
+            <h1 className="mt-2 text-3xl font-black">
+              Welcome back,{' '}
+              {user?.name?.split(' ')[0] || 'Instructor'}
+            </h1>
+
+            <p className="mt-2 text-slate-500">
+              Create great learning experiences and understand your students.
+            </p>
+          </div>
+
+          <Link
+            to="/instructor/courses/new"
+            className="btn-primary"
+          >
+            <Plus size={17} />
+            Create course
+          </Link>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-4">
+          <Metric
+            icon={BookOpen}
+            value="6"
+            label="Published courses"
+            note="2 drafts in progress"
+          />
+
+          <Metric
+            icon={Users}
+            value="3,842"
+            label="Total learners"
+            note="↑ 12% this month"
+          />
+
+          <Metric
+            icon={Star}
+            value="4.8"
+            label="Average rating"
+            note="Across 721 reviews"
+          />
+
+          <Metric
+            icon={TrendingUp}
+            value="71%"
+            label="Completion rate"
+            note="↑ 4 points"
+          />
+        </div>
+
+        <div className="mt-7 grid gap-6 lg:grid-cols-[1.35fr_.65fr]">
+          <section className="card p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black">
+                Your courses
+              </h2>
+
+              <button className="text-sm font-bold text-spring-700">
+                View all
+              </button>
+            </div>
+
+            {courses.slice(0, 3).map((c, i) => (
+              <div
+                key={c.id}
+                className="mt-4 flex items-center gap-4 rounded-xl border p-4"
+              >
+                <div
+                  className={`grid h-16 w-20 shrink-0 place-items-center rounded-lg bg-gradient-to-br font-black ${c.color}`}
+                >
+                  {c.icon}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-extrabold">
+                    {c.title}
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    {[1284, 966, 745][i]} learners ·{' '}
+                    {c.rating} rating
+                  </p>
+                </div>
+
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${
+                    i === 2
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-spring-50 text-spring-700'
+                  }`}
+                >
+                  {i === 2 ? 'Draft' : 'Published'}
+                </span>
+
+                <button className="btn-secondary !p-2">
+                  <Settings size={16} />
+                </button>
+              </div>
+            ))}
+          </section>
+
+          <section className="card p-6">
+            <h2 className="text-xl font-black">
+              Course builder
+            </h2>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Structure sections, add video or text lessons, create quizzes,
+              and submit for review.
+            </p>
+
+            {[
+              ['Course details', Check],
+              ['Curriculum', Check],
+              ['Assessments', Plus],
+              ['Publish checklist', Lock]
+            ].map(([x, I], i) => (
+              <div
+                key={x}
+                className="mt-4 flex items-center gap-3"
+              >
+                <span
+                  className={`grid h-8 w-8 place-items-center rounded-lg ${
+                    i < 2
+                      ? 'bg-spring-50 text-spring-700'
+                      : 'bg-slate-100 text-slate-400'
+                  }`}
+                >
+                  <I size={15} />
+                </span>
+
+                <span className="text-sm font-bold">
+                  {x}
+                </span>
+              </div>
+            ))}
+
+            <Link
+              to="/instructor/courses/new"
+              className="btn-primary mt-6 w-full"
+            >
+              Open course builder
+            </Link>
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function InstructorManagement() {
+  const [tab, setTab] = useState('Active');
+  const [email, setEmail] = useState('');
+  const [showInvite, setShowInvite] = useState(false);
+  const [notice, setNotice] = useState('');
+
+  const [active, setActive] = useState([
+    {
+      id: 1,
+      name: 'Maya Chen',
+      email: 'maya@skillspring.com',
+      courses: 6,
+      status: 'Active'
+    },
+    {
+      id: 2,
+      name: 'Omar Khalid',
+      email: 'omar@skillspring.com',
+      courses: 4,
+      status: 'Active'
+    },
+    {
+      id: 3,
+      name: 'Nadia Rahman',
+      email: 'nadia@skillspring.com',
+      courses: 3,
+      status: 'Active'
+    }
+  ]);
+
+  const [pending, setPending] = useState([]);
+
+  async function loadManagement() {
+    try {
+      const d = await api('/instructor-invitations');
+
+      setActive(
+        d.instructors.map((x) => ({
+          id: x._id,
+          name: x.name,
+          email: x.email,
+          courses: x.courses || 0,
+          status: x.status
+        }))
+      );
+
+      setPending(
+        d.invitations
+          .filter((x) => x.status === 'pending')
+          .map((x) => ({
+            id: x._id,
+            email: x.email,
+            expires: new Date(x.expiresAt).toLocaleDateString(),
+            sent: new Date(x.lastSentAt).toLocaleString()
+          }))
+      );
+    } catch (e) {
+      setNotice(e.message);
+    }
+  }
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) {
+      loadManagement();
+    }
+  }, []);
+
+  const used = active.length + pending.length;
+  const available = Math.max(0, 5 - used);
+
+  async function invite(e) {
+    e.preventDefault();
+
+    const clean = email.trim().toLowerCase();
+
+    if (!clean) return;
+
+    if (used >= 5) {
+      setNotice(
+        'All 5 instructor slots are currently reserved.'
+      );
+      return;
+    }
+
+    if (
+      active.some((x) => x.email === clean) ||
+      pending.some((x) => x.email === clean)
+    ) {
+      setNotice(
+        'This person is already an instructor or has a pending invitation.'
+      );
+      return;
+    }
+
+    if (!import.meta.env.DEV) {
+      try {
+        await api('/instructor-invitations', {
+          method: 'POST',
+          body: JSON.stringify({ email: clean })
+        });
+
+        await loadManagement();
+      } catch (e) {
+        setNotice(e.message);
+        return;
+      }
+    } else {
+      setPending([
+        ...pending,
+        {
+          id: Date.now(),
+          email: clean,
+          expires: 'September 4, 2026',
+          sent: 'Just now'
+        }
+      ]);
+    }
+
+    setEmail('');
+    setShowInvite(false);
+    setTab('Pending');
+    setNotice(`Invitation sent to ${clean}`);
+  }
+
+  async function cancel(id) {
+    if (!import.meta.env.DEV) {
+      try {
+        await api(
+          `/instructor-invitations/${id}`,
+          {
+            method: 'DELETE'
+          }
+        );
+
+        await loadManagement();
+      } catch (e) {
+        setNotice(e.message);
+        return;
+      }
+    } else {
+      setPending(
+        pending.filter((x) => x.id !== id)
+      );
+    }
+
+    setNotice(
+      'Invitation cancelled and slot released.'
+    );
+  }
+
+  async function remove(id) {
+    if (!import.meta.env.DEV) {
+      try {
+        await api(
+          `/instructor-invitations/instructors/${id}/access`,
+          {
+            method: 'DELETE'
+          }
+        );
+
+        await loadManagement();
+      } catch (e) {
+        setNotice(e.message);
+        return;
+      }
+    } else {
+      setActive(
+        active.filter((x) => x.id !== id)
+      );
+    }
+
+    setNotice(
+      'Instructor access removed. The account is now a student.'
+    );
+  }
+
+  async function resend(id, email) {
+    if (!import.meta.env.DEV) {
+      try {
+        await api(
+          `/instructor-invitations/${id}/resend`,
+          {
+            method: 'POST'
+          }
+        );
+
+        await loadManagement();
+      } catch (e) {
+        setNotice(e.message);
+        return;
+      }
+    }
+
+    setNotice(
+      `A fresh 7-day invitation was resent to ${email}`
+    );
+  }
+
+  return (
+    <section className="card mt-7 overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-5 border-b p-6">
+        <div className="flex items-center gap-4">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-spring-50 text-spring-700">
+            <GraduationCap size={24} />
+          </span>
+
+          <div>
+            <h2 className="text-xl font-black">
+              Instructor Management
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Invitation-only access · Maximum 5 instructors
+            </p>
+          </div>
+        </div>
+
+        <button
+          disabled={available === 0}
+          onClick={() => setShowInvite(true)}
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <Plus size={17} />
+          Invite instructor
+        </button>
+      </div>
+
+      <div className="grid border-b sm:grid-cols-[1fr_1fr_2fr]">
+        <div className="p-6 sm:border-r">
+          <p className="text-3xl font-black">
+            <span className="text-spring-600">
+              {active.length}
+            </span>{' '}
+            / 5
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-slate-500">
+            Active instructors
+          </p>
+        </div>
+
+        <div className="p-6 sm:border-r">
+          <p className="text-3xl font-black">
+            {available}
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-slate-500">
+            Slots available
+          </p>
+        </div>
+
+        <div className="p-6">
+          <div className="flex justify-between text-xs font-bold">
+            <span>Instructor capacity</span>
+            <span>{used} of 5 reserved</span>
+          </div>
+
+          <div className="mt-3 flex gap-2">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <span
+                key={i}
+                className={`h-3 flex-1 rounded-full ${
+                  i < active.length
+                    ? 'bg-spring-600'
+                    : i < used
+                    ? 'bg-amber-400'
+                    : 'bg-slate-100'
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="mt-3 flex gap-4 text-[11px] text-slate-400">
+            <span>● Active</span>
+            <span className="text-amber-600">
+              ● Pending
+            </span>
+            <span className="text-slate-300">
+              ● Available
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {notice && (
+        <div className="mx-6 mt-5 flex items-center justify-between rounded-xl bg-spring-50 p-3 text-sm font-semibold text-spring-800">
+          <span>
+            <CircleCheck
+              size={16}
+              className="mr-2 inline"
+            />
+            {notice}
+          </span>
+
+          <button onClick={() => setNotice('')}>
+            <X size={15} />
+          </button>
+        </div>
+      )}
+
+      <div className="flex gap-2 px-6 pt-6">
+        {['Active', 'Pending'].map((x) => (
+          <button
+            key={x}
+            onClick={() => setTab(x)}
+            className={`rounded-full px-4 py-2 text-sm font-bold ${
+              tab === x
+                ? 'bg-ink text-white'
+                : 'border bg-white text-slate-500'
+            }`}
+          >
+            {x}{' '}
+            {x === 'Active'
+              ? `(${active.length})`
+              : `(${pending.length})`}
+          </button>
+        ))}
+      </div>
+
+      <div className="p-6">
+        {tab === 'Active' && (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[650px] text-left text-sm">
+              <thead className="border-b text-xs uppercase tracking-wider text-slate-400">
+                <tr>
+                  <th className="pb-3">Instructor</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Courses</th>
+                  <th className="pb-3 text-right">
+                    Management
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {active.map((x) => (
+                  <tr
+                    key={x.id}
+                    className="border-b last:border-0"
+                  >
+                    <td className="py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="grid h-10 w-10 place-items-center rounded-full bg-spring-100 font-black text-spring-800">
+                          {x.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </span>
+
+                        <div>
+                          <p className="font-bold">
+                            {x.name}
+                          </p>
+
+                          <p className="mt-0.5 text-xs text-slate-400">
+                            {x.email}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      <span className="rounded-full bg-spring-50 px-3 py-1 text-xs font-bold text-spring-700">
+                        Active
+                      </span>
+                    </td>
+
+                    <td className="font-bold">
+                      {x.courses}
+                    </td>
+
+                    <td className="text-right">
+                      <button
+                        onClick={() => remove(x.id)}
+                        className="rounded-lg border px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600"
+                      >
+                        Remove access
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {tab === 'Pending' &&
+          (pending.length ? (
+            <div className="space-y-3">
+              {pending.map((x) => (
+                <div
+                  key={x.id}
+                  className="flex flex-wrap items-center gap-4 rounded-xl border p-4"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-700">
+                    <Bell size={18} />
+                  </span>
+
+                  <div className="min-w-52 flex-1">
+                    <p className="font-bold">
+                      {x.email}
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Sent {x.sent} · Expires {x.expires}
+                    </p>
+                  </div>
+
+                  <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                    Pending
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      resend(x.id, x.email)
+                    }
+                    className="btn-secondary !px-3 !py-2"
+                  >
+                    Resend
+                  </button>
+
+                  <button
+                    onClick={() => cancel(x.id)}
+                    className="px-3 py-2 text-xs font-bold text-red-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-10 text-center">
+              <Bell
+                className="mx-auto text-slate-300"
+              />
+
+              <p className="mt-3 font-bold">
+                No pending invitations
+              </p>
+
+              <p className="mt-1 text-sm text-slate-400">
+                Invitations waiting for acceptance will appear here.
+              </p>
+            </div>
+          ))}
+      </div>
+
+      {showInvite && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/70 p-4 backdrop-blur-sm">
+          <form
+            onSubmit={invite}
+            className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl"
+          >
+            <div className="flex items-center justify-between">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-spring-50 text-spring-700">
+                <GraduationCap />
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setShowInvite(false)}
+              >
+                <X />
+              </button>
+            </div>
+
+            <h3 className="mt-6 text-2xl font-black">
+              Invite an instructor
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              They will receive a secure, single-use invitation that expires
+              after 7 days. The accepting account must use the same email.
+            </p>
+
+            <label className="mt-6 block">
+              <span className="mb-2 block text-sm font-bold">
+                Email address
+              </span>
+
+              <input
+                autoFocus
+                required
+                type="email"
+                className="input"
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
+                placeholder="instructor@example.com"
+              />
+            </label>
+
+            <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs text-slate-500">
+              <ShieldCheck
+                size={15}
+                className="mr-2 inline text-spring-700"
+              />
+              {available} of 5 instructor slots available
+            </div>
+
+            <button className="btn-primary mt-5 w-full">
+              Send 7-day invitation
+              <ArrowRight size={17} />
+            </button>
+          </form>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function LegacyAdminDashboard({ user }) {
+  return (
+    <div className="min-h-[calc(100vh-72px)] bg-slate-50">
+      <main className="container-page py-9">
+        <div>
+          <p className="eyebrow">
+            Platform administration
+          </p>
+
+          <h1 className="mt-2 text-3xl font-black">
+            SkillSpring overview
+          </h1>
+
+          <p className="mt-2 text-slate-500">
+            Review activity, approvals, and platform health.
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-4">
+          <Metric
+            icon={Users}
+            value="50,284"
+            label="Total users"
+            note="1,208 joined this month"
+          />
+
+          <Metric
+            icon={GraduationCap}
+            value="428"
+            label="Instructors"
+            note="14 awaiting approval"
+          />
+
+          <Metric
+            icon={BookOpen}
+            value="1,206"
+            label="Published courses"
+            note="23 awaiting review"
+          />
+
+          <Metric
+            icon={BarChart3}
+            value="68.4%"
+            label="Platform completion"
+            note="↑ 2.7 points"
+          />
+        </div>
+
+        <InstructorManagement />
+
+        <div className="mt-7 grid gap-6 lg:grid-cols-2">
+          <section className="card p-6">
+            <div className="flex justify-between">
+              <h2 className="text-xl font-black">
+                Pending approvals
+              </h2>
+
+              <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                37 items
+              </span>
+            </div>
+
+            {[
+              'Advanced UX Research',
+              'Machine Learning Projects',
+              'Strategic Brand Systems'
+            ].map((x, i) => (
+              <div
+                key={x}
+                className="mt-4 flex items-center gap-4 rounded-xl border p-4"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-spring-50 text-spring-700">
+                  <FileText size={18} />
+                </span>
+
+                <div className="flex-1">
+                  <p className="font-bold">{x}</p>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Submitted {i + 1} day{i ? 's' : ''} ago
+                  </p>
+                </div>
+
+                <button className="text-sm font-bold text-spring-700">
+                  Review
+                </button>
+              </div>
+            ))}
+          </section>
+
+          <section className="card p-6">
+            <h2 className="text-xl font-black">
+              Platform signals
+            </h2>
+
+            {[
+              [
+                'API & database',
+                'Operational',
+                'text-spring-700 bg-spring-50'
+              ],
+              [
+                'Content reports',
+                '3 open',
+                'text-amber-700 bg-amber-50'
+              ],
+              [
+                'Security events',
+                'No issues',
+                'text-spring-700 bg-spring-50'
+              ],
+              [
+                'AI tutor usage',
+                '8,420 today',
+                'text-violet-700 bg-violet-50'
+              ]
+            ].map(([x, v, c]) => (
+              <div
+                key={x}
+                className="mt-4 flex items-center justify-between border-b pb-4 text-sm"
+              >
+                <span className="font-semibold text-slate-600">
+                  {x}
+                </span>
+
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${c}`}
+                >
+                  {v}
+                </span>
+              </div>
+            ))}
+          </section>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function Overview({ user }) {
+  return (
+    <>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-sm text-slate-500">
+            Friday, August 28
+          </p>
+
+          <h1 className="mt-1 text-3xl font-black tracking-tight">
+            Good afternoon,{' '}
+            {user?.name?.split(' ')[0] || 'Ayesha'} 👋
+          </h1>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Small steps add up. Keep your momentum going.
+          </p>
+        </div>
+
+        <Link
+          to="/courses"
+          className="btn-primary"
+        >
+          <Plus size={17} />
+          Find a course
+        </Link>
+      </div>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <Metric
+          icon={Clock}
+          value="4h 20m"
+          label="Learning this week"
+          note="↑ 18% from last week"
+        />
+
+        <Metric
+          icon={Trophy}
+          value="12 days"
+          label="Current streak"
+          note="Personal best: 19 days"
+        />
+
+        <Metric
+          icon={Target}
+          value="78%"
+          label="Weekly goal"
+          note="1h 05m remaining"
+        />
+      </div>
+
+      <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_.65fr]">
+        <div className="card p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-black">
+                Continue learning
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Pick up right where you left off.
+              </p>
+            </div>
+
+            <Link
+              to="/courses"
+              className="text-sm font-bold text-spring-700"
+            >
+              View all
+            </Link>
+          </div>
+
+          <div className="mt-6 space-y-4">
+            {courses.slice(0, 2).map((c) => (
+              <div
+                key={c.id}
+                className="flex flex-col gap-4 rounded-xl border p-4 sm:flex-row sm:items-center"
+              >
+                <div
+                  className={`grid h-20 w-full shrink-0 place-items-center rounded-xl bg-gradient-to-br text-2xl font-black sm:w-24 ${c.color}`}
+                >
+                  {c.icon}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold uppercase tracking-wider text-spring-700">
+                    {c.category}
+                  </p>
+
+                  <h3 className="mt-1 truncate font-extrabold">
+                    {c.title}
+                  </h3>
+
+                  <div className="mt-3 flex items-center gap-3">
+                    <div className="h-1.5 flex-1 rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-spring-500"
+                        style={{
+                          width: `${c.progress}%`
+                        }}
+                      />
+                    </div>
+
+                    <span className="text-xs font-bold">
+                      {c.progress}%
+                    </span>
+                  </div>
+                </div>
+
+                <Link
+                  to={`/learn/${c.id}`}
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink text-white"
+                >
+                  <Play
+                    size={14}
+                    fill="currentColor"
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-black">
+              Weekly activity
+            </h2>
+
+            <span className="text-xs text-slate-400">
+              Aug 24–30
+            </span>
+          </div>
+
+          <div className="mt-8 flex h-36 items-end justify-between gap-2">
+            {[40, 72, 35, 90, 64, 20, 5].map(
+              (v, i) => (
+                <div
+                  key={i}
+                  className="flex flex-1 flex-col items-center gap-2"
+                >
+                  <div
+                    className="w-full max-w-7 rounded-t-md bg-spring-200"
+                    style={{
+                      height: `${v}%`
+                    }}
+                  >
+                    <div className="h-2/3 w-full rounded-t-md bg-spring-500" />
+                  </div>
+
+                  <span className="text-[10px] text-slate-400">
+                    {['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}
+                  </span>
+                </div>
+              )
+            )}
+          </div>
+
+          <div className="mt-5 rounded-xl bg-spring-50 p-4">
+            <div className="flex gap-3">
+              <Sparkles
+                className="shrink-0 text-spring-600"
+                size={18}
+              />
+
+              <p className="text-xs leading-5 text-slate-600">
+                <strong className="text-ink">
+                  Smart insight:
+                </strong>{' '}
+                Your strongest learning window is 6–8 PM. Schedule your next
+                session then.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Metric({ icon: I, value, label, note }) {
+  return (
+    <div className="card p-5">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-2xl font-black">
+            {value}
+          </p>
+
+          <p className="mt-1 text-sm font-semibold text-slate-500">
+            {label}
+          </p>
+        </div>
+
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-spring-50 text-spring-700">
+          <I size={20} />
+        </span>
+      </div>
+
+      <p className="mt-4 text-xs text-spring-700">
+        {note}
+      </p>
+    </div>
+  );
+}
+
+function MyLearning() {
+  return (
+    <>
+      <h1 className="text-3xl font-black">
+        My learning
+      </h1>
+
+      <p className="mt-2 text-slate-500">
+        Your active, saved, and completed courses.
+      </p>
+
+      <div className="mt-7 flex gap-2">
+        {[
+          'In progress',
+          'Saved',
+          'Completed'
+        ].map((x, i) => (
+          <button
+            key={x}
+            className={`rounded-full px-4 py-2 text-sm font-bold ${
+              i === 0
+                ? 'bg-ink text-white'
+                : 'border bg-white'
+            }`}
+          >
+            {x}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-6 grid gap-6 md:grid-cols-2">
+        {courses.slice(0, 4).map((c) => (
+          <CourseCard
+            c={c}
+            key={c.id}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function Analytics() {
+  return (
+    <>
+      <h1 className="text-3xl font-black">
+        Learning analytics
+      </h1>
+
+      <p className="mt-2 text-slate-500">
+        Understand your habits and strengthen weak areas.
+      </p>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <Metric
+          icon={Clock}
+          value="27h 45m"
+          label="Total learning time"
+          note="Across 8 active weeks"
+        />
+
+        <Metric
+          icon={ClipboardCheck}
+          value="86%"
+          label="Average quiz score"
+          note="↑ 7 points this month"
+        />
+
+        <Metric
+          icon={CircleCheck}
+          value="164"
+          label="Lessons completed"
+          note="12 completed this week"
+        />
+      </div>
+
+      <div className="mt-6 grid gap-6 md:grid-cols-2">
+        <div className="card p-6">
+          <h3 className="font-extrabold">
+            Skills in progress
+          </h3>
+
+          {[
+            ['User research', 88],
+            ['Prototyping', 72],
+            ['Data storytelling', 61],
+            ['Growth strategy', 46]
+          ].map(([x, v]) => (
+            <div key={x} className="mt-5">
+              <div className="flex justify-between text-sm">
+                <span>{x}</span>
+                <strong>{v}%</strong>
+              </div>
+
+              <div className="mt-2 h-2 rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full bg-spring-500"
+                  style={{
+                    width: v + '%'
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="card p-6">
+          <h3 className="font-extrabold">
+            Focus opportunities
+          </h3>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Based on quiz performance and lesson revisits.
+          </p>
+
+          {[
+            'Statistical significance',
+            'Accessibility heuristics',
+            'Retention cohorts'
+          ].map((x, i) => (
+            <div
+              key={x}
+              className="mt-4 flex items-center justify-between rounded-xl bg-amber-50 p-4"
+            >
+              <div>
+                <p className="text-sm font-bold">
+                  {x}
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Recommended review · {8 + i * 3} min
+                </p>
+              </div>
+
+              <ArrowRight size={17} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Certificates() {
+  return (
+    <>
+      <h1 className="text-3xl font-black">
+        Certificates
+      </h1>
+
+      <p className="mt-2 text-slate-500">
+        Share proof of the skills you have earned.
+      </p>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        {[
+          'Design Thinking Foundations',
+          'Digital Productivity'
+        ].map((x, i) => (
+          <div
+            key={x}
+            className="card relative overflow-hidden p-7"
+          >
+            <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-spring-100" />
+
+            <Award
+              size={38}
+              className="relative text-spring-600"
+            />
+
+            <p className="eyebrow mt-8">
+              Certificate of completion
+            </p>
+
+            <h3 className="mt-3 text-xl font-black">
+              {x}
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-500">
+              Issued August {12 - i * 7}, 2026
+            </p>
+
+            <button className="btn-secondary mt-6 !py-2">
+              View credential
+            </button>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function Notifications() {
+  return (
+    <>
+      <h1 className="text-3xl font-black">
+        Notifications
+      </h1>
+
+      <div className="card mt-8 divide-y">
+        {[
+          [
+            CircleCheck,
+            'Quiz result available',
+            'You scored 92% on “Research Methods”.',
+            '12 min ago'
+          ],
+          [
+            Bell,
+            'Live session reminder',
+            'Product critique starts tomorrow at 6:00 PM.',
+            '2 hours ago'
+          ],
+          [
+            Award,
+            'Certificate unlocked',
+            'Your Design Thinking certificate is ready.',
+            'Yesterday'
+          ]
+        ].map(([I, t, d, time]) => (
+          <div
+            className="flex gap-4 p-5"
+            key={t}
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-spring-50 text-spring-700">
+              <I size={19} />
+            </span>
+
+            <div className="flex-1">
+              <p className="font-bold">{t}</p>
+
+              <p className="mt-1 text-sm text-slate-500">
+                {d}
+              </p>
+            </div>
+
+            <span className="text-xs text-slate-400">
+              {time}
+            </span>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function InstructorInvitationPage({ user }) {
+  const { token } = useParams();
+  const [status, setStatus] = useState('ready');
+  const [message, setMessage] = useState('');
+
+  async function accept() {
+    if (!user) {
+      setStatus('login');
+      return;
+    }
+
+    setStatus('loading');
+
+    try {
+      const result = await api(
+        `/instructor-invitations/${token}/accept`,
+        {
+          method: 'POST'
+        }
+      );
+
+      localStorage.setItem(
+        'ss_user',
+        JSON.stringify(result.user)
+      );
+
+      setMessage(
+        'Your account is now an instructor account.'
+      );
+
+      setStatus('accepted');
+    } catch (e) {
+      if (
+        import.meta.env.VITE_DEMO_MODE === 'true' &&
+        user?.role === 'student'
+      ) {
+        const upgraded = {
+          ...user,
+          role: 'instructor',
+          status: 'active'
+        };
+
+        localStorage.setItem(
+          'ss_user',
+          JSON.stringify(upgraded)
+        );
+
+        setMessage(
+          'Preview invitation accepted. Your account is now an instructor account.'
+        );
+
+        setStatus('accepted');
+      } else {
+        setMessage(e.message);
+        setStatus('error');
+      }
+    }
+  }
+
+  return (
+    <main className="mesh grid min-h-[calc(100vh-72px)] place-items-center px-5 py-16">
+      <div className="card w-full max-w-xl p-8 text-center sm:p-10">
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-spring-50 text-spring-700">
+          <GraduationCap size={32} />
+        </span>
+
+        <p className="eyebrow mt-6">
+          Instructor invitation
+        </p>
+
+        <h1 className="mt-3 text-3xl font-black">
+          You’re invited to teach on SkillSpring
+        </h1>
+
+        <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-500">
+          Accepting gives your account access to the instructor dashboard and
+          course builder. This secure invitation is email-bound, single-use,
+          and expires after 7 days.
+        </p>
+
+        {user ? (
+          <div className="mt-6 rounded-xl border bg-slate-50 p-4 text-left">
+            <p className="text-xs text-slate-400">
+              Signed in as
+            </p>
+
+            <p className="mt-1 font-bold">
+              {user.name} · {user.email}
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            Sign in with the exact email address that received this invitation
+            before accepting.
+          </div>
+        )}
+
+        {status === 'error' && (
+          <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+            {message}
+          </p>
+        )}
+
+        {status === 'accepted' ? (
+          <>
+            <div className="mt-6 rounded-xl bg-spring-50 p-4 font-bold text-spring-800">
+              <CircleCheck className="mr-2 inline" />
+              {message}
+            </div>
+
+            {/* FIXED: React Router navigation */}
+            <Link
+              to="/dashboard"
+              className="btn-primary mt-5"
+            >
+              Open instructor dashboard
+              <ArrowRight size={17} />
+            </Link>
+          </>
+        ) : (
+          <button
+            onClick={accept}
+            disabled={status === 'loading'}
+            className="btn-primary mt-6 w-full"
+          >
+            {status === 'loading'
+              ? 'Accepting invitation…'
+              : user
+              ? 'Accept instructor invitation'
+              : 'Sign in to continue'}
+
+            <ArrowRight size={17} />
+          </button>
+        )}
+
+        <p className="mt-5 text-xs text-slate-400">
+          <ShieldCheck
+            size={13}
+            className="mr-1 inline"
+          />
+          The invitation cannot be transferred to another account.
+        </p>
+      </div>
+    </main>
+  );
+}
+
+function CourseBuilder() {
+  const nav = useNavigate();
+
+  const [step, setStep] = useState('Details');
+  const [saved, setSaved] = useState(false);
+
+  const [course, setCourse] = useState(() => {
+    try {
+      return (
+        JSON.parse(
+          localStorage.getItem('ss_course_draft')
+        ) || {
+          title: '',
+          subtitle: '',
+          category: 'Design',
+          level: 'beginner',
+          description: '',
+          outcomes: [''],
+          sections: [
+            {
+              id: Date.now(),
+              title: 'Getting started',
+              lessons: [
+                {
+                  id: Date.now() + 1,
+                  title: 'Welcome to the course',
+                  type: 'video',
+                  duration: 5
+                }
+              ]
+            }
+          ]
+        }
+      );
+    } catch {
+      return {
+        title: '',
+        subtitle: '',
+        category: 'Design',
+        level: 'beginner',
+        description: '',
+        outcomes: [''],
+        sections: []
+      };
+    }
+  });
+
+  const steps = [
+    ['Details', FileText],
+    ['Curriculum', BookOpen],
+    ['Quiz', ClipboardCheck],
+    ['Publish', CircleCheck]
+  ];
+
+  function update(k, v) {
+    setCourse({
+      ...course,
+      [k]: v
+    });
+
+    setSaved(false);
+  }
+
+  function save() {
+    localStorage.setItem(
+      'ss_course_draft',
+      JSON.stringify(course)
+    );
+
+    setSaved(true);
+
+    setTimeout(
+      () => setSaved(false),
+      1800
+    );
+  }
+
+  function addSection() {
+    update('sections', [
+      ...course.sections,
+      {
+        id: Date.now(),
+        title: `New section ${course.sections.length + 1}`,
+        lessons: []
+      }
+    ]);
+  }
+
+  function setSection(si, key, value) {
+    const sections = course.sections.map(
+      (s, i) =>
+        i === si
+          ? {
+              ...s,
+              [key]: value
+            }
+          : s
+    );
+
+    update('sections', sections);
+  }
+
+  function addLesson(si) {
+    const sections = course.sections.map(
+      (s, i) =>
+        i === si
+          ? {
+              ...s,
+              lessons: [
+                ...s.lessons,
+                {
+                  id: Date.now(),
+                  title: 'Untitled lesson',
+                  type: 'video',
+                  duration: 5
+                }
+              ]
+            }
+          : s
+    );
+
+    update('sections', sections);
+  }
+
+  function setLesson(si, li, key, value) {
+    const sections = course.sections.map(
+      (s, i) =>
+        i === si
+          ? {
+              ...s,
+              lessons: s.lessons.map(
+                (l, j) =>
+                  j === li
+                    ? {
+                        ...l,
+                        [key]: value
+                      }
+                    : l
+              )
+            }
+          : s
+    );
+
+    update('sections', sections);
+  }
+
+  function removeLesson(si, li) {
+    const sections = course.sections.map(
+      (s, i) =>
+        i === si
+          ? {
+              ...s,
+              lessons: s.lessons.filter(
+                (_, j) => j !== li
+              )
+            }
+          : s
+    );
+
+    update('sections', sections);
+  }
+
+  return (
+    <div className="min-h-[calc(100vh-72px)] bg-slate-50">
+      <div className="border-b bg-white">
+        <div className="container-page flex flex-wrap items-center justify-between gap-4 py-5">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => nav('/dashboard')}
+              className="grid h-10 w-10 place-items-center rounded-xl border"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-spring-700">
+                Course builder
+              </p>
+
+              <h1 className="font-black">
+                {course.title || 'Untitled course'}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span
+              className={`text-xs font-bold ${
+                saved
+                  ? 'text-spring-700'
+                  : 'text-slate-400'
+              }`}
+            >
+              {saved
+                ? 'Draft saved'
+                : 'Unsaved changes'}
+            </span>
+
+            <button
+              onClick={save}
+              className="btn-secondary !py-2.5"
+            >
+              Save draft
+            </button>
+
+            <button
+              onClick={() => setStep('Publish')}
+              className="btn-primary !py-2.5"
+            >
+              Review & publish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container-page grid gap-8 py-8 lg:grid-cols-[230px_1fr]">
+        <aside>
+          <div className="card sticky top-24 p-3">
+            {steps.map(([s, I], i) => (
+              <button
+                key={s}
+                onClick={() => setStep(s)}
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold ${
+                  step === s
+                    ? 'bg-ink text-white'
+                    : 'text-slate-500 hover:bg-slate-50'
+                }`}
+              >
+                <span
+                  className={`grid h-7 w-7 place-items-center rounded-lg ${
+                    step === s
+                      ? 'bg-white/10'
+                      : 'bg-slate-100'
+                  }`}
+                >
+                  <I size={15} />
+                </span>
+
+                <span>{s}</span>
+
+                <span className="ml-auto text-[10px] opacity-50">
+                  0{i + 1}
+                </span>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <main className="min-w-0">
+          {step === 'Details' && (
+            <section className="card p-6 sm:p-8">
+              <p className="eyebrow">
+                Step 1 of 4
+              </p>
+
+              <h2 className="mt-2 text-2xl font-black">
+                Course details
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Help learners understand what they will achieve.
+              </p>
+
+              <div className="mt-7 space-y-5">
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold">
+                    Course title *
+                  </span>
+
+                  <input
+                    className="input"
+                    value={course.title}
+                    onChange={(e) =>
+                      update(
+                        'title',
+                        e.target.value
+                      )
+                    }
+                    placeholder="e.g. Product Design: From Research to Prototype"
+                  />
+
+                  <span className="mt-1 block text-right text-xs text-slate-400">
+                    {course.title.length}/80
+                  </span>
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold">
+                    Short subtitle
+                  </span>
+
+                  <input
+                    className="input"
+                    value={course.subtitle}
+                    onChange={(e) =>
+                      update(
+                        'subtitle',
+                        e.target.value
+                      )
+                    }
+                    placeholder="A clear one-line promise to your learners"
+                  />
+                </label>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <label>
+                    <span className="mb-2 block text-sm font-bold">
+                      Category
+                    </span>
+
+                    <select
+                      className="input"
+                      value={course.category}
+                      onChange={(e) =>
+                        update(
+                          'category',
+                          e.target.value
+                        )
+                      }
+                    >
+                      {[
+                        'Design',
+                        'Development',
+                        'Data',
+                        'Marketing',
+                        'Business',
+                        'AI'
+                      ].map((x) => (
+                        <option key={x}>
+                          {x}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    <span className="mb-2 block text-sm font-bold">
+                      Level
+                    </span>
+
+                    <select
+                      className="input"
+                      value={course.level}
+                      onChange={(e) =>
+                        update(
+                          'level',
+                          e.target.value
+                        )
+                      }
+                    >
+                      <option value="beginner">
+                        Beginner
+                      </option>
+
+                      <option value="intermediate">
+                        Intermediate
+                      </option>
+
+                      <option value="advanced">
+                        Advanced
+                      </option>
+
+                      <option value="all-levels">
+                        All levels
+                      </option>
+                    </select>
+                  </label>
+                </div>
+
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold">
+                    Description *
+                  </span>
+
+                  <textarea
+                    className="input min-h-36 resize-y"
+                    value={course.description}
+                    onChange={(e) =>
+                      update(
+                        'description',
+                        e.target.value
+                      )
+                    }
+                    placeholder="Describe the course, its approach, and who it is for…"
+                  />
+                </label>
+
+                <div className="flex justify-end">
+                  <button
+                    onClick={() =>
+                      setStep('Curriculum')
+                    }
+                    className="btn-primary"
+                  >
+                    Continue to curriculum
+                    <ArrowRight size={17} />
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {step === 'Curriculum' && (
+            <section>
+              <div className="card p-6 sm:p-8">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p className="eyebrow">
+                      Step 2 of 4
+                    </p>
+
+                    <h2 className="mt-2 text-2xl font-black">
+                      Build your curriculum
+                    </h2>
+
+                    <p className="mt-2 text-sm text-slate-500">
+                      Organize lessons into clear, focused sections.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={addSection}
+                    className="btn-secondary !py-2.5"
+                  >
+                    <Plus size={16} />
+                    Add section
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-5">
+                {course.sections.map(
+                  (section, si) => (
+                    <div
+                      className="card overflow-hidden"
+                      key={section.id}
+                    >
+                      <div className="flex items-center gap-3 border-b bg-slate-50 p-4">
+                        <span className="grid h-8 w-8 place-items-center rounded-lg bg-white text-xs font-black">
+                          {si + 1}
+                        </span>
+
+                        <input
+                          className="min-w-0 flex-1 bg-transparent font-extrabold outline-none"
+                          value={section.title}
+                          onChange={(e) =>
+                            setSection(
+                              si,
+                              'title',
+                              e.target.value
+                            )
+                          }
+                        />
+
+                        <span className="text-xs text-slate-400">
+                          {section.lessons.length}{' '}
+                          lessons
+                        </span>
+                      </div>
+
+                      <div className="p-4">
+                        {section.lessons.map(
+                          (lesson, li) => (
+                            <div
+                              key={lesson.id}
+                              className="mb-3 grid items-center gap-3 rounded-xl border p-3 sm:grid-cols-[32px_1fr_130px_85px_32px]"
+                            >
+                              <span className="grid h-8 w-8 place-items-center rounded-lg bg-spring-50 text-spring-700">
+                                {lesson.type ===
+                                'video' ? (
+                                  <Video size={15} />
+                                ) : lesson.type ===
+                                  'quiz' ? (
+                                  <ClipboardCheck
+                                    size={15}
+                                  />
+                                ) : (
+                                  <FileText
+                                    size={15}
+                                  />
+                                )}
+                              </span>
+
+                              <input
+                                className="min-w-0 bg-transparent text-sm font-bold outline-none"
+                                value={lesson.title}
+                                onChange={(e) =>
+                                  setLesson(
+                                    si,
+                                    li,
+                                    'title',
+                                    e.target.value
+                                  )
+                                }
+                              />
+
+                              <select
+                                className="rounded-lg border bg-white px-2 py-2 text-xs"
+                                value={lesson.type}
+                                onChange={(e) =>
+                                  setLesson(
+                                    si,
+                                    li,
+                                    'type',
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option value="video">
+                                  Video
+                                </option>
+
+                                <option value="text">
+                                  Text lesson
+                                </option>
+
+                                <option value="quiz">
+                                  Quiz
+                                </option>
+
+                                <option value="assignment">
+                                  Assignment
+                                </option>
+                              </select>
+
+                              <label className="flex items-center gap-1 text-xs text-slate-400">
+                                <input
+                                  type="number"
+                                  min="1"
+                                  className="w-12 rounded-md border p-1"
+                                  value={
+                                    lesson.duration
+                                  }
+                                  onChange={(e) =>
+                                    setLesson(
+                                      si,
+                                      li,
+                                      'duration',
+                                      +e.target.value
+                                    )
+                                  }
+                                />
+                                min
+                              </label>
+
+                              <button
+                                onClick={() =>
+                                  removeLesson(
+                                    si,
+                                    li
+                                  )
+                                }
+                                className="text-slate-300 hover:text-red-500"
+                              >
+                                <X size={17} />
+                              </button>
+                            </div>
+                          )
+                        )}
+
+                        <button
+                          onClick={() =>
+                            addLesson(si)
+                          }
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-spring-700 hover:bg-spring-50"
+                        >
+                          <Plus size={16} />
+                          Add lesson
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+
+                {course.sections.length === 0 && (
+                  <div className="card py-14 text-center">
+                    <BookOpen
+                      className="mx-auto text-slate-300"
+                      size={34}
+                    />
+
+                    <p className="mt-3 font-bold">
+                      No sections yet
+                    </p>
+
+                    <button
+                      onClick={addSection}
+                      className="btn-primary mt-5"
+                    >
+                      <Plus size={16} />
+                      Add your first section
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {step === 'Quiz' && (
+            <section className="card p-6 sm:p-8">
+              <p className="eyebrow">
+                Step 3 of 4
+              </p>
+
+              <h2 className="mt-2 text-2xl font-black">
+                Assessments
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Add quizzes from the curriculum lesson type, then configure
+                their rules here.
+              </p>
+
+              <div className="mt-7 rounded-2xl border border-dashed border-spring-300 bg-spring-50 p-8 text-center">
+                <ClipboardCheck
+                  className="mx-auto text-spring-600"
+                  size={38}
+                />
+
+                <h3 className="mt-4 font-extrabold">
+                  Create a course quiz
+                </h3>
+
+                <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                  Build multiple-choice questions with explanations, passing
+                  scores, timers, and attempt limits.
+                </p>
+
+                <button className="btn-primary mt-5">
+                  <Plus size={16} />
+                  New quiz
+                </button>
+              </div>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {[
+                  ['Passing score', '70%'],
+                  ['Attempt limit', '3 attempts'],
+                  ['Time limit', '20 minutes']
+                ].map(([a, b]) => (
+                  <div
+                    key={a}
+                    className="rounded-xl border p-4"
+                  >
+                    <p className="text-xs text-slate-400">
+                      {a}
+                    </p>
+
+                    <p className="mt-1 font-extrabold">
+                      {b}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {step === 'Publish' && (
+            <section className="card p-6 sm:p-8">
+              <p className="eyebrow">
+                Step 4 of 4
+              </p>
+
+              <h2 className="mt-2 text-2xl font-black">
+                Ready to publish?
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Review the checklist before submitting your course for approval.
+              </p>
+
+              <div className="mt-7 space-y-3">
+                {[
+                  [
+                    course.title.length > 3,
+                    'Course has a clear title'
+                  ],
+                  [
+                    course.description.length > 20,
+                    'Description is complete'
+                  ],
+                  [
+                    course.sections.length > 0,
+                    'At least one curriculum section'
+                  ],
+                  [
+                    course.sections.some(
+                      (s) => s.lessons.length > 0
+                    ),
+                    'At least one lesson added'
+                  ]
+                ].map(([ok, text]) => (
+                  <div
+                    key={text}
+                    className={`flex items-center gap-3 rounded-xl border p-4 ${
+                      ok
+                        ? 'border-spring-200 bg-spring-50'
+                        : 'border-amber-200 bg-amber-50'
+                    }`}
+                  >
+                    <span
+                      className={`grid h-7 w-7 place-items-center rounded-full ${
+                        ok
+                          ? 'bg-spring-600 text-white'
+                          : 'bg-amber-200 text-amber-800'
+                      }`}
+                    >
+                      {ok ? (
+                        <Check size={15} />
+                      ) : (
+                        <span className="text-xs font-black">
+                          !
+                        </span>
+                      )}
+                    </span>
+
+                    <span className="text-sm font-bold">
+                      {text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-wrap justify-end gap-3">
+                <button
+                  onClick={save}
+                  className="btn-secondary"
+                >
+                  Save as draft
+                </button>
+
+                <button
+                  disabled={
+                    !course.title ||
+                    !course.description ||
+                    !course.sections.length
+                  }
+                  onClick={() => {
+                    save();
+                    alert(
+                      'Course submitted for admin review.'
+                    );
+                    nav('/dashboard');
+                  }}
+                  className="btn-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <ShieldCheck size={17} />
+                  Submit for review
+                </button>
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function Player() {
+  const { id } = useParams();
+  const c =
+    courses.find((x) => x.id === id) ||
+    courses[0];
+
+  const [done, setDone] = useState(false);
+  const [ai, setAi] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-2 text-sm"
+        >
+          <ChevronLeft />
+          Back to dashboard
+        </Link>
+
+        <div className="font-bold">
+          {c.title}
+        </div>
+
+        <span className="text-sm text-white/50">
+          16 / {c.lessons}
+        </span>
+      </div>
+
+      <div className="grid min-h-[calc(100vh-64px)] lg:grid-cols-[1fr_340px]">
+        <main className="p-5 lg:p-8">
+          <div className="grid aspect-video place-items-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900">
+            <div className="text-center">
+              <button className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-spring-500 text-white shadow-xl">
+                <Play
+                  size={28}
+                  fill="currentColor"
+                />
+              </button>
+
+              <p className="mt-5 text-sm text-white/50">
+                Video lesson preview
+              </p>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-4xl py-8">
+            <p className="eyebrow !text-spring-400">
+              Section 3 · Testing ideas
+            </p>
+
+            <h1 className="mt-3 text-3xl font-black">
+              Prototype testing: observe, learn, improve
+            </h1>
+
+            <p className="mt-4 leading-7 text-white/60">
+              Learn how to plan a focused usability session, observe without
+              leading, and turn evidence into clear design decisions.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-3">
+              <button
+                onClick={() =>
+                  setDone(!done)
+                }
+                className={`btn-primary ${
+                  done
+                    ? '!bg-white !text-ink'
+                    : ''
+                }`}
+              >
+                {done ? (
+                  <Check />
+                ) : (
+                  <CircleCheck />
+                )}
+
+                {done
+                  ? 'Completed'
+                  : 'Mark complete'}
+              </button>
+
+              <button
+                onClick={() =>
+                  setAi(!ai)
+                }
+                className="rounded-xl border border-white/15 px-5 py-3 text-sm font-bold hover:bg-white/5"
+              >
+                <BrainCircuit
+                  className="mr-2 inline"
+                  size={17}
+                />
+                Ask AI tutor
+              </button>
+            </div>
+
+            {ai && (
+              <div className="mt-5 rounded-2xl border border-spring-500/30 bg-spring-500/10 p-5">
+                <div className="flex gap-3">
+                  <BrainCircuit className="shrink-0 text-spring-400" />
+
+                  <div>
+                    <p className="font-bold">
+                      SkillSpring Tutor
+                    </p>
+
+                    <p className="mt-2 text-sm leading-6 text-white/70">
+                      Try thinking of prototype testing as a low-cost
+                      conversation with your design. You are not testing the
+                      participant—you are testing whether the interface
+                      communicates clearly. What part would you like me to
+                      explain?
+                    </p>
+
+                    <input
+                      className="mt-4 w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm"
+                      placeholder="Ask a follow-up question…"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
+
+        <aside className="border-l border-white/10 bg-slate-900 p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-extrabold">
+              Course content
+            </h2>
+
+            <span className="text-xs text-white/40">
+              68%
+            </span>
+          </div>
+
+          <div className="mt-4 h-1.5 rounded-full bg-white/10">
+            <div className="h-full w-[68%] rounded-full bg-spring-500" />
+          </div>
+
+          {[
+            'Welcome and foundations',
+            'Research that reveals needs',
+            'Testing ideas',
+            'From insight to iteration'
+          ].map((s, i) => (
+            <div
+              key={s}
+              className="mt-5"
+            >
+              <p className="text-xs font-extrabold uppercase tracking-wider text-white/40">
+                {i + 1}. {s}
+              </p>
+
+              {[
+                'Lesson overview',
+                'Key concepts',
+                'Practice and reflect'
+              ].map((l, j) => (
+                <button
+                  key={l}
+                  className={`mt-2 flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm ${
+                    i === 2 && j === 1
+                      ? 'bg-spring-500/15 text-spring-300'
+                      : 'text-white/60 hover:bg-white/5'
+                  }`}
+                >
+                  {i < 2 ||
+                  (i === 2 && j === 0) ? (
+                    <CircleCheck
+                      size={16}
+                      className="text-spring-400"
+                    />
+                  ) : (
+                    <Play size={15} />
+                  )}
+
+                  <span>{l}</span>
+
+                  <span className="ml-auto text-[10px]">
+                    {5 + j * 2}:20
+                  </span>
+                </button>
+              ))}
+            </div>
+          ))}
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function AuthModal({
+  mode,
+  onClose,
+  onSuccess
+}) {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'student'
+  });
+
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e) {
+    e.preventDefault();
+
+    setBusy(true);
+    setErr('');
+
+    try {
+      const r = await api(
+        `/auth/${mode}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(
+            mode === 'register'
+              ? {
+                  name: form.name,
+                  email: form.email,
+                  password: form.password
+                }
+              : {
+                  email: form.email,
+                  password: form.password
+                }
+          )
+        }
+      );
+
+      localStorage.setItem(
+        'ss_token',
+        r.token
+      );
+
+      localStorage.setItem(
+        'ss_user',
+        JSON.stringify(r.user)
+      );
+
+      onSuccess(r.user);
+    } catch (e) {
+      if (
+        import.meta.env.VITE_DEMO_MODE === 'true'
+      ) {
+        try {
+          let demoUser;
+
+          if (mode === 'register') {
+            demoUser = {
+              name: form.name,
+              email: form.email,
+              role: 'student',
+              status: 'active'
+            };
+
+            localStorage.setItem(
+              'ss_demo_user',
+              JSON.stringify(demoUser)
+            );
+          } else {
+            demoUser = JSON.parse(
+              localStorage.getItem(
+                'ss_demo_user'
+              ) || 'null'
+            );
+
+            if (
+              !demoUser ||
+              demoUser.email.toLowerCase() !==
+                form.email.toLowerCase()
+            ) {
+              setErr(
+                'No preview account found. Create an account first.'
+              );
+              return;
+            }
+          }
+
+          localStorage.setItem(
+            'ss_token',
+            'preview-session'
+          );
+
+          localStorage.setItem(
+            'ss_user',
+            JSON.stringify(demoUser)
+          );
+
+          onSuccess(demoUser);
+        } catch {
+          setErr(
+            'Preview storage is unavailable. Please refresh and try again.'
+          );
+        }
+      } else {
+        setErr(e.message);
+      }
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/70 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <Brand />
+
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 hover:bg-slate-100"
+          >
+            <X />
+          </button>
+        </div>
+
+        <h2 className="mt-8 text-3xl font-black">
+          {mode === 'login'
+            ? 'Welcome back'
+            : 'Start growing today'}
+        </h2>
+
+        <p className="mt-2 text-sm text-slate-500">
+          {mode === 'login'
+            ? 'Continue your learning journey.'
+            : 'Create your free SkillSpring account.'}
+        </p>
+
+        <form
+          onSubmit={submit}
+          className="mt-6 space-y-4"
+        >
+          {mode === 'register' && (
+            <>
+              <input
+                required
+                className="input"
+                placeholder="Full name"
+                value={form.name}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    name: e.target.value
+                  })
+                }
+              />
+
+              <div className="rounded-xl border border-spring-200 bg-spring-50 p-3 text-xs leading-5 text-spring-800">
+                <ShieldCheck
+                  size={15}
+                  className="mr-2 inline"
+                />
+                New accounts are students. Instructor access is granted by
+                administrator invitation only.
+              </div>
+            </>
+          )}
+
+          <input
+            required
+            type="email"
+            className="input"
+            placeholder="Email address"
+            value={form.email}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                email: e.target.value
+              })
+            }
+          />
+
+          <input
+            required
+            minLength="8"
+            type="password"
+            className="input"
+            placeholder="Password (8+ characters)"
+            value={form.password}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                password: e.target.value
+              })
+            }
+          />
+
+          {err && (
+            <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              {err}
+            </p>
+          )}
+
+          <button
+            disabled={busy}
+            className="btn-primary w-full"
+          >
+            {busy
+              ? 'Please wait…'
+              : mode === 'login'
+              ? 'Log in'
+              : 'Create account'}
+
+            <ArrowRight size={17} />
+          </button>
+        </form>
+
+        <p className="mt-5 text-center text-xs text-slate-400">
+          <Lock
+            size={12}
+            className="mr-1 inline"
+          />
+          Protected with secure authentication
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SettingsPage({
+  user,
+  onAuth,
+  onLogout
+}) {
+  if (!user) {
+    return (
+      <main className="mesh grid min-h-[calc(100vh-72px)] place-items-center px-5 py-16">
+        <div className="card w-full max-w-md p-8 text-center">
+          <Lock
+            className="mx-auto text-spring-600"
+            size={34}
+          />
+
+          <h1 className="mt-5 text-3xl font-black">
+            Log in required
+          </h1>
+
+          <p className="mt-3 text-sm text-slate-500">
+            Log in to view and manage your account settings.
+          </p>
+
+          <button
+            onClick={() => onAuth('login')}
+            className="btn-primary mt-6 w-full"
+          >
+            Log in
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-[calc(100vh-72px)] bg-slate-50">
+      <div className="container-page max-w-4xl py-10">
+        <p className="eyebrow">
+          Your account
+        </p>
+
+        <h1 className="mt-2 text-3xl font-black">
+          Settings
+        </h1>
+
+        <p className="mt-2 text-sm text-slate-500">
+          Review your signed-in account and session controls.
+        </p>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-[1fr_300px]">
+          <section className="card p-6">
+            <h2 className="text-xl font-black">
+              Profile
+            </h2>
+
+            <div className="mt-6 flex items-center gap-4">
+              <span className="grid h-16 w-16 place-items-center rounded-2xl bg-spring-100 text-lg font-black text-spring-800">
+                {user.name
+                  ?.split(' ')
+                  .map((x) => x[0])
+                  .join('')
+                  .slice(0, 2) || 'U'}
+              </span>
+
+              <div>
+                <p className="text-lg font-extrabold">
+                  {user.name}
+                </p>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  {user.email}
+                </p>
+
+                <span className="mt-2 inline-block rounded-full bg-spring-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-spring-700">
+                  {user.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-7 grid gap-4 sm:grid-cols-2">
+              <label>
+                <span className="mb-2 block text-sm font-bold">
+                  Full name
+                </span>
+
+                <input
+                  className="input"
+                  value={user.name || ''}
+                  readOnly
+                />
+              </label>
+
+              <label>
+                <span className="mb-2 block text-sm font-bold">
+                  Email address
+                </span>
+
+                <input
+                  className="input"
+                  value={user.email || ''}
+                  readOnly
+                />
+              </label>
+            </div>
+
+            <p className="mt-4 text-xs text-slate-400">
+              Role changes are controlled by the platform administrator and
+              cannot be edited here.
+            </p>
+          </section>
+
+          <aside className="card h-fit p-6">
+            <h2 className="font-black">
+              Login & security
+            </h2>
+
+            <div className="mt-5 rounded-xl bg-spring-50 p-4">
+              <p className="text-xs font-bold uppercase tracking-wider text-spring-700">
+                Current session
+              </p>
+
+              <p className="mt-2 text-sm font-bold">
+                You are logged in
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                Signed in as {user.email}
+              </p>
+            </div>
+
+            <button
+              onClick={onLogout}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-red-50 px-5 py-3 text-sm font-bold text-red-700 hover:bg-red-100"
+            >
+              <LogOut size={17} />
+              Log out
+            </button>
+          </aside>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function Footer() {
+  const groups = [
+    [
+      'Learn',
+      [
+        'Browse courses',
+        'Learning paths',
+        'Certificates'
+      ]
+    ],
+    [
+      'Teach',
+      [
+        'Become an instructor',
+        'Instructor resources',
+        'Course builder'
+      ]
+    ],
+    [
+      'Company',
+      [
+        'About',
+        'For teams',
+        'Help center'
+      ]
+    ]
+  ];
+
+  return (
+    <footer className="border-t border-slate-200 bg-white">
+      <div className="container-page py-10 sm:py-14">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_.75fr_.75fr_.75fr]">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Brand />
+
+            <p className="mt-4 max-w-sm text-sm leading-6 text-slate-500">
+              Practical, expert-led learning for people ready to grow their
+              skills and shape what comes next.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3 min-[420px]:flex-row">
+              <Link
+                to="/courses"
+                className="btn-primary !py-2.5"
+              >
+                Explore courses
+                <ArrowRight size={16} />
+              </Link>
+
+              <Link
+                to="/settings"
+                className="btn-secondary !py-2.5"
+              >
+                Account settings
+              </Link>
+            </div>
+          </div>
+
+          {groups.map(([heading, items]) => (
+            <div key={heading}>
+              <h3 className="text-sm font-extrabold text-ink">
+                {heading}
+              </h3>
+
+              <ul className="mt-4 space-y-3">
+                {items.map((item) => (
+                  <li key={item}>
+                    {item === 'Browse courses' ? (
+                      <Link
+                        to="/courses"
+                        className="text-sm text-slate-500 hover:text-spring-700"
+                      >
+                        {item}
+                      </Link>
+                    ) : item === 'Course builder' ? (
+                      <Link
+                        to="/instructor/courses/new"
+                        className="text-sm text-slate-500 hover:text-spring-700"
+                      >
+                        {item}
+                      </Link>
+                    ) : (
+                      <a
+                        href="#"
+                        className="text-sm text-slate-500 hover:text-spring-700"
+                      >
+                        {item}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 border-t border-slate-200 pt-6 sm:mt-12">
+          <div className="flex flex-col gap-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © 2026 SkillSpring. Learn boldly.
+            </p>
+
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <a
+                href="#"
+                className="hover:text-spring-700"
+              >
+                Privacy
+              </a>
+
+              <a
+                href="#"
+                className="hover:text-spring-700"
+              >
+                Terms
+              </a>
+
+              <a
+                href="#"
+                className="hover:text-spring-700"
+              >
+                Accessibility
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function AdminRoute({ user, children }) {
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (user.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
+export default function App() {
+  const [auth, setAuth] = useState(null);
+
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem('ss_user')
+      );
+    } catch {
+      return null;
+    }
+  });
+
+  const loc = useLocation();
+
+  // IMPORTANT: useNavigate instead of window.location.href
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [loc.pathname]);
+
+  const standalone =
+    loc.pathname.startsWith('/learn/');
+
+  // FIXED FOR GITHUB PAGES
+  function logout() {
+    localStorage.removeItem('ss_token');
+    localStorage.removeItem('ss_user');
+    localStorage.removeItem('ss_demo_user');
+
+    setUser(null);
+    setAuth(null);
+
+    navigate('/');
+  }
+
+  return (
+    <>
+      {!standalone && (
+        <Navbar
+          user={user}
+          onAuth={setAuth}
+          onLogout={logout}
+        />
+      )}
+
+      <Routes>
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/courses"
+          element={<Courses />}
+        />
+
+        <Route
+          path="/course/:id"
+          element={<CourseDetail />}
+        />
+
+        <Route
+          path="/dashboard"
+          element={<Dashboard user={user} />}
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute user={user}>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <SettingsPage
+              user={user}
+              onAuth={setAuth}
+              onLogout={logout}
+            />
+          }
+        />
+
+        <Route
+          path="/invitations/instructor/:token"
+          element={
+            <InstructorInvitationPage
+              user={user}
+            />
+          }
+        />
+
+        <Route
+          path="/instructor/courses/new"
+          element={<CourseBuilder />}
+        />
+
+        <Route
+          path="/learn/:id"
+          element={<Player />}
+        />
+
+        <Route
+          path="*"
+          element={<Home />}
+        />
+      </Routes>
+
+      {!standalone && <Footer />}
+
+      {auth && (
+        <AuthModal
+          mode={auth}
+          onClose={() => setAuth(null)}
+          onSuccess={(u) => {
+            setUser(u);
+            setAuth(null);
+
+            // FIXED FOR GITHUB PAGES
+            navigate('/dashboard');
+          }}
+        />
+      )}
+    </>
+  );
 }
