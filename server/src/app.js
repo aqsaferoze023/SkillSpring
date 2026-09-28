@@ -37,7 +37,7 @@ app.use('/api', platform);
 if (process.env.NODE_ENV === 'production') {
   const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../client/dist');
   app.use(express.static(dir));
-  app.get('*', (req,res)=>res.sendFile(path.join(dir,'index.html')));
+  app.get('/*splat', (req,res)=>res.sendFile(path.join(dir,'index.html')));
 } else app.use(notFound);
 app.use(errorHandler);
 
