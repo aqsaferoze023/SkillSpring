@@ -20,6 +20,15 @@ export async function sendInstructorInvitationEmail({ email, inviteUrl, inviterN
       html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#10231c"><h1>Teach on SkillSpring</h1><p>${inviterName} invited you to become a SkillSpring instructor.</p><p>This invitation expires in 7 days. Sign in or create a student account using <strong>${email}</strong>, then accept the invitation.</p><p><a href="${inviteUrl}" style="display:inline-block;padding:12px 20px;background:#12895e;color:white;text-decoration:none;border-radius:10px">Accept invitation</a></p><p style="color:#64748b;font-size:12px">If you were not expecting this invitation, you can ignore this email.</p></div>`
     })
   });
-  if (!response.ok) throw Object.assign(new Error('Could not send invitation email'), { status: 502 });
+  if (!response.ok) {
+  const errorData = await response.json().catch(() => ({}));
+
+  console.error('RESEND ERROR:', errorData);
+
+  throw Object.assign(
+    new Error(errorData?.message || 'Could not send invitation email'),
+    { status: 502 }
+  );
+}
   return response.json();
 }
